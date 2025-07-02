@@ -46,7 +46,7 @@ fun RegisterScreen(
                     colorStops = arrayOf(
                         0.0f to Color(0xFFFFF8E1), // Cream dari atas
                         0.2f to Color(0xFFFFF8E1), // Cream lebih panjang
-                        1.0f to Color(0xFFB3E5FC)  // Light Blue di bawah
+                        1.0f to Color(0xFFB3E5FC)
                     )
                 )
             )
@@ -80,7 +80,6 @@ fun RegisterScreen(
                 onValueChange = { email = it },
                 label = "Email",
                 placeholder = "Masukkan Email",
-                isPassword = true
             )
             AuthEditText(
                 value = password,
@@ -101,7 +100,9 @@ fun RegisterScreen(
         Column(
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            BlueButtonFull(onClick = {}, text = "Login")
+            BlueButtonFull(onClick = {
+                viewModel.register(email,password,confirmPassword,username,isIbu)
+            }, text = "Login", state = registerState)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -131,5 +132,22 @@ fun RegisterScreen(
                 )
             }
         }
+    }
+    when (registerState) {
+        is State.Success -> {
+            LaunchedEffect(Unit) {
+                Toast.makeText(context, "Register berhasil", Toast.LENGTH_SHORT).show()
+                navController.navigate("login")
+                viewModel.resetRegisterState()
+            }
+        }
+        is State.Error -> {
+            val message = (registerState as State.Error).message
+            LaunchedEffect(message) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                viewModel.resetRegisterState()
+            }
+        }
+        else -> Unit
     }
 }

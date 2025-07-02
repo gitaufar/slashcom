@@ -1,5 +1,6 @@
 package com.example.slashcom.ui.presentation.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -29,15 +33,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
+import com.example.slashcom.cache.UserData
 import com.example.slashcom.ui.presentation.componen.AuthEditText
 import com.example.slashcom.ui.presentation.componen.BlueButtonFull
 
-@Preview
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel = viewModel(),
-    navController: NavController? = null
+    navController: NavController
 ) {
+    val context = LocalContext.current
+    val loginState by viewModel.loginState.collectAsState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     Column(
@@ -95,10 +101,12 @@ fun LoginScreen(
                 )
             )
         }
-        Column (
+        Column(
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            BlueButtonFull(onClick = {}, text = "Login")
+            BlueButtonFull(onClick = {
+                viewModel.login(email, password)
+            }, text = "Login", state = loginState)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -115,7 +123,7 @@ fun LoginScreen(
                     )
                 )
                 Text(
-                    modifier = Modifier.clickable { navController!!.navigate("pilihRole") },
+                    modifier = Modifier.clickable { navController.navigate("pilihRole") },
                     text = "Register",
                     style = TextStyle(
                         fontSize = 14.sp,
@@ -128,5 +136,26 @@ fun LoginScreen(
                 )
             }
         }
+    }
+    when (loginState) {
+        is State.Success -> {
+            LaunchedEffect(Unit) {
+                Toast.makeText(context, UserData.isIbu.toString(), Toast.LENGTH_SHORT).show()
+                if (UserData.isIbu) {
+                    navController.navigate("recorder")
+                }
+                viewModel.resetLoginState()
+            }
+        }
+
+        is State.Error -> {
+            val message = (loginState as State.Error).message
+            LaunchedEffect(message) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                viewModel.resetLoginState()
+            }
+        }
+
+        else -> Unit
     }
 }
