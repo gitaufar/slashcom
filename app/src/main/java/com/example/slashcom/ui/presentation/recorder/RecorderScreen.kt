@@ -1,6 +1,7 @@
 package com.example.slashcom.ui.presentation.recorder
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -11,19 +12,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), modifier: Modifier) {
     val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        ActivityCompat.requestPermissions(
-            (context as android.app.Activity),
-            arrayOf(Manifest.permission.RECORD_AUDIO),
-            0
+    var isPermissionGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
         )
     }
+
+    LaunchedEffect(Unit) {
+        if (!isPermissionGranted) {
+            ActivityCompat.requestPermissions(
+                (context as android.app.Activity),
+                arrayOf(Manifest.permission.RECORD_AUDIO),
+                0
+            )
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        isPermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+    }
+
 
     Column(
         modifier = Modifier
