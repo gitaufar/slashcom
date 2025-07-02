@@ -40,7 +40,6 @@ class RecorderViewModel : ViewModel() {
     private lateinit var outputFile: File
 
     fun startRecording(context: Context) {
-
         val directory = File(
             context.getExternalFilesDir(Environment.DIRECTORY_MUSIC),
             "SlashCom"
@@ -51,16 +50,21 @@ class RecorderViewModel : ViewModel() {
         }
 
         outputFile = File(directory, "audio_record_${System.currentTimeMillis()}.mp4")
-
-        recorder = AudioRecorder(outputFile)
+        recorder = AudioRecorder(context, outputFile)
         recorder.startRecording()
-        Toast.makeText(context, "Recording started, saved at: ${outputFile.absolutePath}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            context,
+            "Recording started, saved at: ${outputFile.absolutePath}",
+            Toast.LENGTH_SHORT
+        ).show()
         startVolumeUpdates()
     }
 
+
     fun stopRecording(context: Context) {
         recorder.stopRecording()
-        Toast.makeText(context, "Recording saved at: ${outputFile.absolutePath}", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Recording saved at: ${outputFile.absolutePath}", Toast.LENGTH_LONG)
+            .show()
         stopVolumeUpdates()
     }
 
