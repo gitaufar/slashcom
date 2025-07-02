@@ -33,6 +33,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.slashcom.ui.presentation.auth.LoginScreen
+import com.example.slashcom.ui.presentation.auth.PilihRole
+import com.example.slashcom.ui.presentation.auth.RegisterScreen
+import com.example.slashcom.ui.presentation.onboard.GetStarted
+import com.example.slashcom.ui.presentation.onboard.Onboarding1
+import com.example.slashcom.ui.presentation.onboard.Onboarding2
+import com.example.slashcom.ui.presentation.recorder.RecorderScreen
+import com.example.slashcom.ui.presentation.splash.SplashScreen
 import com.example.slashcom.ui.theme.SlashcomTheme
 
 class MainActivity : ComponentActivity() {
@@ -40,10 +53,32 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             SlashcomTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    CheckAudioPermission();
-                    SpeechToTextScreen(modifier = Modifier.padding(innerPadding));
+                    NavHost(
+                        navController = navController,
+                        startDestination = "splash"
+                    ){
+                        composable("splash") { SplashScreen(navController) }
+                        composable("onboard") { Onboarding1(navController) }
+                        composable("onboard2") { Onboarding2(navController) }
+                        composable("getStarted") { GetStarted(navController) }
+                        composable("login") { LoginScreen(navController = navController) }
+                        composable("pilihRole") { PilihRole(navController) }
+                        composable(
+                            "register?isIbu={isIbu}",
+                            arguments = listOf(
+                                navArgument("isIbu") {
+                                    type = NavType.BoolType
+                                    defaultValue = false
+                                }
+                            )) { backStackEntry ->
+                            val isIbu = backStackEntry.arguments?.getBoolean("isIbu") ?: false
+                            RegisterScreen(isIbu = isIbu, navController = navController)
+                        }
+                        composable("recorder") { RecorderScreen(modifier = Modifier.padding(innerPadding)) }
+                    }
                 }
             }
         }
@@ -67,73 +102,5 @@ fun CheckAudioPermission() {
                 1
             )
         }
-    }
-}
-
-@Composable
-fun SpeechToTextScreen(
-    modifier: Modifier
-) {
-    val context = LocalContext.current
-    var spokenText by remember { mutableStateOf("") }
-    var isListening by remember { mutableStateOf(false) }
-
-    val speechRecognizer = remember {
-        SpeechRecognizer.createSpeechRecognizer(context).apply {
-            setRecognitionListener(object : RecognitionListener {
-                override fun onReadyForSpeech(params: Bundle?) {
-                    Toast.makeText(context, "Silakan bicara...", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onResults(results: Bundle?) {
-                    val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                    spokenText = matches?.get(0) ?: "Tidak dikenali"
-                    isListening = false
-                }
-
-                override fun onError(error: Int) {
-                    Toast.makeText(context, "Error: $error", Toast.LENGTH_SHORT).show()
-                    isListening = false
-                }
-
-                // Fungsi wajib lain (boleh kosong)
-                override fun onBeginningOfSpeech() {}
-                override fun onBufferReceived(buffer: ByteArray?) {}
-                override fun onEndOfSpeech() {}
-                override fun onEvent(eventType: Int, params: Bundle?) {}
-                override fun onPartialResults(partialResults: Bundle?) {}
-                override fun onRmsChanged(rmsdB: Float) {}
-            })
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = {
-                if (!isListening) {
-                    val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                        putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                        putExtra(RecognizerIntent.EXTRA_LANGUAGE, "id-ID")  // Bahasa Indonesia
-                    }
-                    speechRecognizer.startListening(intent)
-                    isListening = true
-                }
-            }
-        ) {
-            Text(if (isListening) "Mendengarkan..." else "Mulai Bicara")
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = if (spokenText.isNotEmpty()) spokenText else "Hasil akan muncul di sini...",
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }

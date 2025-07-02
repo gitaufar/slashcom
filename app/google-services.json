@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "461398461165",
+    "firebase_url": "https://slashcom-hackathon-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "slashcom-hackathon",
+    "storage_bucket": "slashcom-hackathon.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461398461165:android:a017b2dc1f785506745ae4",
+        "android_client_info": {
+          "package_name": "com.example.slashcom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxj6jwS9mBxqRc3jwottKMemV0pI6oufY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
