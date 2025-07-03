@@ -1,0 +1,41 @@
+package com.example.slashcom.ui.presentation.dashboard
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.slashcom.data.repository.DashboardRepositoryImpl
+import com.example.slashcom.domain.model.Mood
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
+
+class DashboardViewModel(
+    private val repository: DashboardRepositoryImpl = DashboardRepositoryImpl()
+) : ViewModel() {
+
+    private val _moodList = MutableStateFlow<List<Mood>>(emptyList())
+    val moodList: StateFlow<List<Mood>> = _moodList
+
+    private val _lastMood = MutableStateFlow<Mood?>(null)
+    val lastMood: StateFlow<Mood?> = _lastMood
+
+    fun loadMoods(uid: String) {
+        viewModelScope.launch {
+            repository.getMoods(uid)
+                .catch { e -> e.printStackTrace() }
+                .collect { moods -> _moodList.value = moods }
+        }
+    }
+
+    fun loadLastMood(uid: String) {
+        viewModelScope.launch {
+            repository.getLastMood(uid)
+                .catch { e -> e.printStackTrace() }
+                .collect { mood -> _lastMood.value = mood }
+        }
+    }
+
+    fun addMood(mood: Mood) {
+        repository.addMood(mood)
+    }
+}
