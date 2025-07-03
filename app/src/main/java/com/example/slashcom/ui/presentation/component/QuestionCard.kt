@@ -78,6 +78,7 @@ fun QuestionCard(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
+                    modifier = Modifier.fillMaxWidth(),
                     text = if (isIdle) "${index + 1}. $question" else question,
                     style = TextStyle(
                         fontSize = 14.sp,

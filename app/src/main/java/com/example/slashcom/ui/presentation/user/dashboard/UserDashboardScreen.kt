@@ -24,7 +24,7 @@ import com.example.slashcom.ui.presentation.component.*
 
 //@Preview
 @Composable
-fun DashboardScreen(navController: NavController, viewModel: DashboardViewModel = remember { DashboardViewModel() }) {
+fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewModel = remember { DashboardViewModel() }) {
 
     val lastMood by viewModel.lastMood.collectAsState()
     val uid = UserData.uid

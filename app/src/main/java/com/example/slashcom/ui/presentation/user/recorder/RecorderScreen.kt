@@ -85,8 +85,8 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
         Row(
             modifier = Modifier
                 .border(width = 0.3.dp, color = Color(0xFF7F7F7F))
-                .height(80.dp)
-                .padding(start = 20.dp, top = 30.dp, end = 20.dp, bottom = 20.dp),
+                .height(90.dp)
+                .padding(start = 20.dp, top = 40.dp, end = 20.dp, bottom = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -95,7 +95,7 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
                     .padding(1.dp)
                     .width(30.dp)
                     .height(30.dp)
-                    .clickable { navController.navigate("dashboard") },
+                    .clickable { navController.navigate("userDashboard") },
                 painter = painterResource(id = R.drawable.arrow_back),
                 contentDescription = "arrow_back",
             )
@@ -158,7 +158,11 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
                 RecorderState.Recording -> RecorderText(text = "Tekan untuk Berhenti")
                 RecorderState.Finished -> BlueButtonFull(
                     text = "Lihat Hasil",
-                    onClick = { viewModel.playRecording(context) })
+                    onClick = {
+//                        viewModel.playRecording(context)
+                        navController.navigate("hasil")
+                    }
+                )
             }
         }
     }

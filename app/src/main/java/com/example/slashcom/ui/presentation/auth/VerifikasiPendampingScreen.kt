@@ -19,18 +19,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.slashcom.R
 import com.example.slashcom.ui.presentation.component.AuthEditText
 
 @Composable
 fun VerifikasiPendampingScreen(
-    modifier: Modifier = Modifier,
-    onVerifikasiClick: (String) -> Unit = {}
+    navController: NavController,
 ) {
     var kodeValue by remember { mutableStateOf("") }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
@@ -61,7 +61,7 @@ fun VerifikasiPendampingScreen(
 
         // Description
         Text(
-            text = "Pendamping akan menerima peringatan jika deteksi sistem menunjukkan tingkat stres tinggi dan kalimat risiko.",
+            text = "Masukkan ID yang ada di profil orang yang Anda dampingi. Pendamping akan menerima peringatan jika deteksi sistem menunjukkan tingkat stres tinggi dan kalimat risiko.",
             style = TextStyle(
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.poppins_regular)),
@@ -86,7 +86,7 @@ fun VerifikasiPendampingScreen(
 
         // Verifikasi Button
         Button(
-            onClick = { onVerifikasiClick(kodeValue) },
+            onClick = {  },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF4A90E2)
             ),
@@ -108,10 +108,4 @@ fun VerifikasiPendampingScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
     }
-}
-
-@Preview
-@Composable
-private fun VerifikasiPendampingScreenPreview() {
-    VerifikasiPendampingScreen()
 }
