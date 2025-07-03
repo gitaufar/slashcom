@@ -9,6 +9,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.database.DatabaseReference
+import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl(
     private val firebaseAuth: FirebaseAuth
@@ -41,6 +43,7 @@ class AuthRepositoryImpl(
                                             .child("id")
                                             .setValue(uniqueCode)
                                             .addOnSuccessListener {
+                                                UserData.uid = userId
                                                 onResult(true, null)
                                             }
                                             .addOnFailureListener { e ->
@@ -76,6 +79,9 @@ class AuthRepositoryImpl(
                             UserData.uid = uid
                             UserData.isIbu = userData?.isIbu ?: false
                             UserData.email = userData?.email ?: ""
+                            if(UserData.isIbu){
+                                UserData.id = userData?.id ?: "ga ke ambil cik"
+                            }
                             onResult(true, null)
                             Log.d("Firebase", "Data: $userData")
                         } else {
@@ -134,5 +140,21 @@ class AuthRepositoryImpl(
 
         tryGenerate()
     }
+
+    override suspend fun isIbuIdExists(randomCode: String): Boolean {
+        val ibuRef = FirebaseProvider.database.child("ibu")
+        return try {
+            val snapshot = ibuRef.orderByChild("id").equalTo(randomCode).get().await()
+            Log.d("FIREBASE_RESULT", "Children found: ${snapshot.childrenCount}")
+            for (child in snapshot.children) {
+                Log.d("FIREBASE_RESULT", "UID: ${child.key}, Data: ${child.value}")
+            }
+            snapshot.exists()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
 
 }

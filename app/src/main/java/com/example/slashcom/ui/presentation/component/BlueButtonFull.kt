@@ -35,7 +35,7 @@ fun BlueButtonFull(
             containerColor = Color(0xFF2D82D5)
         ),
         shape = RoundedCornerShape(12.dp),
-        enabled = state == State.Idle,
+        enabled = state != State.Loading,
         onClick = { onClick() }
     ) {
         if (state == State.Loading) {
