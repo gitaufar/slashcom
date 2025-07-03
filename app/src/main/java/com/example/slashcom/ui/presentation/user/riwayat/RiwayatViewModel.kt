@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.riwayat
+package com.example.slashcom.ui.presentation.user.riwayat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

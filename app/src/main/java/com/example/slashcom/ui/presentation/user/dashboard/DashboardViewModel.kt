@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.dashboard
+package com.example.slashcom.ui.presentation.user.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
