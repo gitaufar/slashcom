@@ -11,6 +11,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
+import android.media.MediaPlayer
 
 class RecorderViewModel : ViewModel() {
 
@@ -67,6 +68,23 @@ class RecorderViewModel : ViewModel() {
             .show()
         stopVolumeUpdates()
     }
+
+    private var mediaPlayer: MediaPlayer? = null
+
+    fun playRecording(context: Context) {
+        if (::outputFile.isInitialized) {
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(outputFile.absolutePath)
+                prepare()
+                start()
+            }
+
+            Toast.makeText(context, "Memutar rekaman...", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Tidak ada file rekaman", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     fun getSavedAudioFile(): File? {
         return if (::outputFile.isInitialized) outputFile else null
