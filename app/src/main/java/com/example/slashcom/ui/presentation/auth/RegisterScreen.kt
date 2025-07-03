@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
+import com.example.slashcom.cache.UserData
 import com.example.slashcom.ui.presentation.component.AuthEditText
 import com.example.slashcom.ui.presentation.component.BlueButtonFull
 
@@ -135,7 +136,17 @@ fun RegisterScreen(
         is State.Success -> {
             LaunchedEffect(Unit) {
                 Toast.makeText(context, "Register berhasil", Toast.LENGTH_SHORT).show()
-                navController.navigate("login")
+                if (UserData.isIbu) {
+                    navController.navigate("login") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                }
+
+                else {
+                    navController.navigate("verifikasi") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                }
                 viewModel.resetRegisterState()
             }
         }

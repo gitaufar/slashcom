@@ -32,7 +32,24 @@ class AuthRepositoryImpl(
                             .child(userId)
                             .setValue(user)
                             .addOnSuccessListener {
-                                onResult(true, null)
+                                // Setelah user berhasil disimpan, generate kode unik
+                                generateUniqueCode { uniqueCode ->
+                                    if (uniqueCode != null) {
+                                        // Simpan ke path ibu/userId/id
+                                        database.child("ibu")
+                                            .child(userId)
+                                            .child("id")
+                                            .setValue(uniqueCode)
+                                            .addOnSuccessListener {
+                                                onResult(true, null)
+                                            }
+                                            .addOnFailureListener { e ->
+                                                onResult(false, "Gagal simpan kode: ${e.message}")
+                                            }
+                                    } else {
+                                        onResult(false, "Gagal generate kode unik")
+                                    }
+                                }
                             }
                             .addOnFailureListener { e ->
                                 onResult(false, e.message)
@@ -45,6 +62,7 @@ class AuthRepositoryImpl(
                 }
             }
     }
+
 
     override fun login(email: String, password: String, onResult: (Boolean, String?) -> Unit) {
         firebaseAuth.signInWithEmailAndPassword(email, password)
@@ -84,4 +102,36 @@ class AuthRepositoryImpl(
     override fun logout() {
         firebaseAuth.signOut()
     }
+
+    private fun generateUniqueCode(onComplete: (String?) -> Unit) {
+        val maxAttempts = 10
+        var attempt = 0
+
+        fun tryGenerate() {
+            if (attempt >= maxAttempts) {
+                onComplete(null) // Gagal setelah 10x percobaan
+                return
+            }
+
+            val randomCode = (100000..999999).random().toString()
+            val ibuRef = database.child("ibu")
+
+            ibuRef.orderByChild("id").equalTo(randomCode)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    if (snapshot.exists()) {
+                        attempt++
+                        tryGenerate() // Coba lagi kalau sudah ada
+                    } else {
+                        onComplete(randomCode) // Kode unik, lanjut simpan
+                    }
+                }
+                .addOnFailureListener {
+                    onComplete(null) // Gagal akses DB
+                }
+        }
+
+        tryGenerate()
+    }
+
 }
