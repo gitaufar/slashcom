@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -30,21 +31,20 @@ import androidx.navigation.compose.rememberNavController
 import com.example.slashcom.R
 import com.example.slashcom.cache.UserData
 import com.example.slashcom.ui.presentation.component.*
-import com.example.slashcom.ui.presentation.user.dashboard.DashboardViewModel
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PendampingDashboardScreen(
     navController: NavController,
-    viewModel: DashboardViewModel = remember { DashboardViewModel() }
+    viewModel: PendampingDashboardViewModel = remember { PendampingDashboardViewModel() }
 ) {
     val lastMood by viewModel.lastMood.collectAsState()
-    val uid = UserData.uid
+    val context = LocalContext.current
     var activeTab by remember { mutableStateOf("riwayatEmosi") }
 
-    LaunchedEffect(uid) {
-        viewModel.loadLastMood(uid)
+    LaunchedEffect(context) {
+        viewModel.loadLastMood(context)
     }
 
     val riwayatEmosi = listOf(
