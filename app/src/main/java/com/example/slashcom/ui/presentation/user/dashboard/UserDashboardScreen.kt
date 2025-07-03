@@ -105,7 +105,8 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
 
                 BantuanButton(
                     text = "Bantuan Darurat",
-                    iconResId = R.drawable.ic_telephone
+                    iconResId = R.drawable.ic_telephone,
+                    onClick = {}
                 )
             }
         }

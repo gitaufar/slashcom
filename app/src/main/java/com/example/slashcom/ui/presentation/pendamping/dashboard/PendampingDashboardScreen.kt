@@ -5,8 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,9 +22,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.slashcom.R
 import com.example.slashcom.cache.UserData
 import com.example.slashcom.ui.presentation.component.*
@@ -190,7 +190,8 @@ fun PendampingDashboardScreen(
                 // Tombol Bantuan
                 BantuanButton(
                     text = "Bantuan Darurat",
-                    iconResId = R.drawable.ic_telephone
+                    iconResId = R.drawable.ic_telephone,
+                    onClick = {}
                 )
             }
         }
@@ -209,3 +210,11 @@ data class RiwayatDaruratItem(
     val tanggal: LocalDate,
     val waktu: String
 )
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun PendampingDashboardScreenPreview() {
+    val navController = rememberNavController()
+    PendampingDashboardScreen(navController = navController)
+}

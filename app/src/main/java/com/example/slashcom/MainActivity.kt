@@ -76,11 +76,6 @@ class MainActivity : ComponentActivity() {
                         composable("riwayat") { RiwayatScreen(navController) }
                         composable("profil") {
                             ProfilScreen(
-                                fullName = "Safira Rahma",
-                                userId = "849349",
-                                username = "safirarhm",
-                                email = "safirarhm@gmail.com",
-                                companionName = "Adi Wijaya",
                                 navController = navController,
                                 onEditClick = {},
                                 onDeleteCompanionClick = {}

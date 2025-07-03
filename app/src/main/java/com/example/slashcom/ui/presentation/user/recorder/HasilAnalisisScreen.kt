@@ -88,7 +88,8 @@ fun HasilAnalisisScreen(navController: NavController) {
             TingkatStresCard(level = 6)
             BantuanButton(
                 text = "Fase Kritis Terdeteksi",
-                iconResId = R.drawable.ic_alert
+                iconResId = R.drawable.ic_alert,
+                onClick = {}
             )
             SaranCard(
                 title = "Saran Buat Ibu",
