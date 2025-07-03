@@ -151,12 +151,3 @@ fun RiwayatScreen(
         }
     }
 }
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun RiwayatScreenPreview(modifier: Modifier = Modifier) {
-    RiwayatScreen(
-        navController = NavController(context = LocalContext.current),
-        viewModel = remember { RiwayatViewModel() })
-}
