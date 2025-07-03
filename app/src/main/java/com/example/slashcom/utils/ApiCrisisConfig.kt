@@ -1,5 +1,5 @@
 package com.example.slashcom.utils
 
-interface ApiConfig {
-    
+interface ApiCrisisConfig {
+
 }

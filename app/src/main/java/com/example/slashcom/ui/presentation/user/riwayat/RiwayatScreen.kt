@@ -109,7 +109,7 @@ fun RiwayatScreen(navController: NavController, viewModel: RiwayatViewModel = re
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
-                    items(moodList) { item ->
+                    items(moodList.reversed()) { item ->
                         RiwayatEmosiCard(
                             emosi = item.emosi,
                             tanggal = LocalDate.parse(item.date, formatter),

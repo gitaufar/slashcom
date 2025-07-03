@@ -60,19 +60,19 @@ fun BottomNavBar(
                 icon = R.drawable.ic_beranda,
                 label = "beranda",
                 isSelected = selected == "beranda",
-                onClick = { navController.navigate("dashboard") }
+                onClick = { if (selected != "beranda") navController.navigate("dashboard") }
             )
             NavItem(
                 icon = R.drawable.ic_riwayat,
                 label = "riwayat",
                 isSelected = selected == "riwayat",
-                onClick = { navController.navigate("riwayat") }
+                onClick = { if (selected != "riwayat") navController.navigate("riwayat") }
             )
             NavItem(
                 icon = R.drawable.ic_profil,
                 label = "profil",
                 isSelected = selected == "profil",
-                onClick = { /* navController.navigate("profil") */ }
+                onClick = { /*if (selected != "profil") navController.navigate("profil") */ }
             )
         }
     }
