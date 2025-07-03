@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.recorder
+package com.example.slashcom.ui.presentation.user.recorder
 
 import android.Manifest
 import android.content.pm.PackageManager

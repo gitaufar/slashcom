@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.riwayat
+package com.example.slashcom.ui.presentation.user.riwayat
 
 import android.os.Build
 import androidx.annotation.RequiresApi

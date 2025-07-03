@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.dashboard
+package com.example.slashcom.ui.presentation.user.dashboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

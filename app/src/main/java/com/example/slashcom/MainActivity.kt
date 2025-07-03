@@ -43,12 +43,12 @@ import androidx.navigation.navArgument
 import com.example.slashcom.ui.presentation.auth.LoginScreen
 import com.example.slashcom.ui.presentation.auth.PilihRole
 import com.example.slashcom.ui.presentation.auth.RegisterScreen
-import com.example.slashcom.ui.presentation.dashboard.DashboardScreen
+import com.example.slashcom.ui.presentation.user.dashboard.DashboardScreen
 import com.example.slashcom.ui.presentation.onboard.GetStarted
 import com.example.slashcom.ui.presentation.onboard.Onboarding1
 import com.example.slashcom.ui.presentation.onboard.Onboarding2
-import com.example.slashcom.ui.presentation.recorder.RecorderScreen
-import com.example.slashcom.ui.presentation.riwayat.RiwayatScreen
+import com.example.slashcom.ui.presentation.user.recorder.RecorderScreen
+import com.example.slashcom.ui.presentation.user.riwayat.RiwayatScreen
 import com.example.slashcom.ui.presentation.splash.SplashScreen
 import com.example.slashcom.ui.theme.SlashcomTheme
 
