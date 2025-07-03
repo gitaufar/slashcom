@@ -1,6 +1,10 @@
 package com.example.slashcom.ui.presentation.auth
 
+import android.content.Context
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
+import com.example.slashcom.cache.PreferencedKey
+import com.example.slashcom.cache.dataStore
 import com.example.slashcom.data.firebase.AuthRepositoryImpl
 import com.example.slashcom.di.FirebaseProvider
 import com.example.slashcom.domain.usecase.AuthUseCase
@@ -17,6 +21,9 @@ class AuthViewModel : ViewModel() {
 
     private val _registerState = MutableStateFlow<State>(State.Idle)
     val registerState: StateFlow<State> = _registerState
+
+    private val _verifikasiState = MutableStateFlow<State>(State.Idle)
+    val verifikasiState: StateFlow<State> = _verifikasiState
 
     fun login(email: String, password: String) {
         _loginState.value = State.Loading
@@ -62,6 +69,20 @@ class AuthViewModel : ViewModel() {
     fun resetLoginState() {
         _loginState.value = State.Idle
     }
+
+    suspend fun saveUid(context: Context, uid: String) {
+        _verifikasiState.value = State.Loading
+        try {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencedKey.uidIbu] = uid
+            }
+            _verifikasiState.value = State.Success
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _verifikasiState.value = State.Error("Gagal menyimpan UID")
+        }
+    }
+
 
 }
 
