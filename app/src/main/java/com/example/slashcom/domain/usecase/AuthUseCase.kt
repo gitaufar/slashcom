@@ -1,6 +1,8 @@
 package com.example.slashcom.domain.usecase
 
+import com.example.slashcom.di.FirebaseProvider
 import com.example.slashcom.domain.repository.AuthRepository
+import kotlinx.coroutines.tasks.await
 
 class AuthUseCase(private val repository: AuthRepository) {
 
@@ -20,6 +22,10 @@ class AuthUseCase(private val repository: AuthRepository) {
             return
         }
         repository.login(email.trim(), password.trim(), onResult)
+    }
+
+    suspend fun isIbuIdExists(randomCode: String): Boolean {
+        return repository.isIbuIdExists(randomCode)
     }
 
     private fun validateRegistration(username: String, email: String, password: String, confirmPassword: String): String? {

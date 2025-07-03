@@ -33,7 +33,6 @@ class DashboardRepositoryImpl(
         }
     }
 
-
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getLastMoodFromAyah(context: Context, uid: String): Flow<Mood?> {
         return getUid(context).flatMapLatest { uidIbu ->
