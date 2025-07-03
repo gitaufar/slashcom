@@ -43,6 +43,7 @@ import androidx.navigation.navArgument
 import com.example.slashcom.ui.presentation.auth.LoginScreen
 import com.example.slashcom.ui.presentation.auth.PilihRole
 import com.example.slashcom.ui.presentation.auth.RegisterScreen
+import com.example.slashcom.ui.presentation.component.ProfilScreen
 import com.example.slashcom.ui.presentation.dashboard.DashboardScreen
 import com.example.slashcom.ui.presentation.onboard.GetStarted
 import com.example.slashcom.ui.presentation.onboard.Onboarding1
@@ -63,7 +64,8 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "splash"
+//                        startDestination = "splash",
+                        startDestination = "dashboard",
                     ) {
                         composable("splash") { SplashScreen(navController) }
                         composable("onboard") { Onboarding1(navController) }
@@ -85,6 +87,18 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("dashboard") { DashboardScreen(navController) }
                         composable("riwayat") { RiwayatScreen(navController) }
+                        composable("profil") {
+                            ProfilScreen(
+                                fullName = "Safira Rahma",
+                                userId = "849349",
+                                username = "safirarhm",
+                                email = "safirarhm@gmail.com",
+                                companionName = "Adi Wijaya",
+                                navController = navController,
+                                onEditClick = {},
+                                onDeleteCompanionClick = {}
+                            )
+                        }
                         composable("recorder") {
                             RecorderScreen(
                                 navController = navController

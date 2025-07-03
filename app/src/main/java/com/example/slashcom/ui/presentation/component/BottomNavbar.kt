@@ -72,7 +72,7 @@ fun BottomNavBar(
                 icon = R.drawable.ic_profil,
                 label = "profil",
                 isSelected = selected == "profil",
-                onClick = { /* navController.navigate("profil") */ }
+                onClick = { navController.navigate("profil") }
             )
         }
     }
