@@ -1,5 +1,6 @@
 package com.example.slashcom.ui.presentation.onboard
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -22,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.slashcom.R
-import com.example.slashcom.ui.presentation.componen.BlueButtonFull
+import com.example.slashcom.ui.presentation.component.BlueButtonFull
 
 @Composable
 fun GetStarted(
@@ -45,7 +47,7 @@ fun GetStarted(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "Selamat datang di SwaraIbu",
+            text = "Selamat datang di Swara Ibu",
             style = TextStyle(
                 fontSize = 20.sp,
                 lineHeight = 28.sp,
@@ -55,16 +57,9 @@ fun GetStarted(
                 textAlign = TextAlign.Center,
             )
         )
-        Text(
-            text = "[Logo]",
-            style = TextStyle(
-                fontSize = 20.sp,
-                lineHeight = 28.sp,
-                fontFamily = FontFamily(Font(R.font.poppins_bold)),
-                fontWeight = FontWeight(700),
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-            )
+        Image(
+            painter = painterResource(R.drawable.logo_swaraibu),
+            contentDescription = "Logo"
         )
         Column(
         ){

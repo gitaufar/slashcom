@@ -62,7 +62,7 @@ fun Onboarding2(
             contentDescription = "Logo"
         )
         Text(
-            text = "Lorem ipsum dolor sit amet",
+            text = "Rasa ibu hadir, dipeluk tanpa syarat",
             style = TextStyle(
                 fontSize = 20.sp,
                 lineHeight = 28.sp,
@@ -76,9 +76,9 @@ fun Onboarding2(
             modifier = Modifier
                 .width(332.dp)
                 .height(112.dp),
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            text = "Karena pendampingan tak selalu tentang kata-kata, Swara Ibu hadir untuk mempertemukan rasa ibu dengan mereka dengan mereka yang hadir sepenuh hati.",
             style = TextStyle(
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 lineHeight = 28.sp,
                 fontFamily = FontFamily(Font(R.font.poppins_medium)),
                 fontWeight = FontWeight(400),

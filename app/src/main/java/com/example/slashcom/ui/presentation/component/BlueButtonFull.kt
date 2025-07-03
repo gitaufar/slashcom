@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.componen
+package com.example.slashcom.ui.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,7 +34,7 @@ fun BlueButtonFull(
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF2D82D5)
         ),
-        shape = RoundedCornerShape(100),
+        shape = RoundedCornerShape(12.dp),
         enabled = state == State.Idle,
         onClick = { onClick() }
     ) {

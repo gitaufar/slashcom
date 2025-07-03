@@ -3,6 +3,7 @@ package com.example.slashcom
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,14 +43,17 @@ import androidx.navigation.navArgument
 import com.example.slashcom.ui.presentation.auth.LoginScreen
 import com.example.slashcom.ui.presentation.auth.PilihRole
 import com.example.slashcom.ui.presentation.auth.RegisterScreen
+import com.example.slashcom.ui.presentation.dashboard.DashboardScreen
 import com.example.slashcom.ui.presentation.onboard.GetStarted
 import com.example.slashcom.ui.presentation.onboard.Onboarding1
 import com.example.slashcom.ui.presentation.onboard.Onboarding2
 import com.example.slashcom.ui.presentation.recorder.RecorderScreen
+import com.example.slashcom.ui.presentation.riwayat.RiwayatScreen
 import com.example.slashcom.ui.presentation.splash.SplashScreen
 import com.example.slashcom.ui.theme.SlashcomTheme
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -59,13 +64,14 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         navController = navController,
                         startDestination = "splash"
-                    ){
+                    ) {
                         composable("splash") { SplashScreen(navController) }
                         composable("onboard") { Onboarding1(navController) }
                         composable("onboard2") { Onboarding2(navController) }
                         composable("getStarted") { GetStarted(navController) }
                         composable("login") { LoginScreen(navController = navController) }
                         composable("pilihRole") { PilihRole(navController) }
+                        composable("dashboard") { DashboardScreen(navController) }
                         composable(
                             "register?isIbu={isIbu}",
                             arguments = listOf(
@@ -77,7 +83,13 @@ class MainActivity : ComponentActivity() {
                             val isIbu = backStackEntry.arguments?.getBoolean("isIbu") ?: false
                             RegisterScreen(isIbu = isIbu, navController = navController)
                         }
-                        composable("recorder") { RecorderScreen(modifier = Modifier.padding(innerPadding)) }
+                        composable("dashboard") { DashboardScreen(navController) }
+                        composable("riwayat") { RiwayatScreen(navController) }
+                        composable("recorder") {
+                            RecorderScreen(
+                                navController = navController
+                            )
+                        }
                     }
                 }
             }
@@ -90,7 +102,10 @@ fun CheckAudioPermission() {
     val context = LocalContext.current
     var hasPermission by remember {
         mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
         )
     }
 
