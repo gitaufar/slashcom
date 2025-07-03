@@ -1,5 +1,6 @@
 package com.example.slashcom.data.repository
 
+import com.example.slashcom.cache.UserData
 import com.example.slashcom.di.FirebaseProvider
 import com.example.slashcom.domain.model.Mood
 import com.example.slashcom.domain.repository.DashboardRepository
@@ -20,7 +21,10 @@ class DashboardRepositoryImpl(
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val moods = snapshot.children.mapNotNull { it.getValue(Mood::class.java) }
-                trySend(moods).isSuccess
+                if (UserData.listMoods != moods) {
+                    UserData.listMoods = moods
+                    trySend(moods).isSuccess
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -28,9 +32,12 @@ class DashboardRepositoryImpl(
             }
         }
 
+        UserData.listMoods?.let { trySend(it).isSuccess }
+
         ref.addValueEventListener(listener)
         awaitClose { ref.removeEventListener(listener) }
     }
+
 
     override fun getLastMood(uid: String): Flow<Mood?> = callbackFlow {
         val ref = database.child("ibu").child(uid).child("mood")
@@ -38,7 +45,11 @@ class DashboardRepositoryImpl(
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val lastMood = snapshot.children.lastOrNull()?.getValue(Mood::class.java)
-                trySend(lastMood).isSuccess
+
+                if (UserData.lastMood != lastMood) {
+                    UserData.lastMood = lastMood
+                    trySend(lastMood).isSuccess
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -46,9 +57,12 @@ class DashboardRepositoryImpl(
             }
         }
 
+        UserData.lastMood?.let { trySend(it).isSuccess }
+
         ref.addValueEventListener(listener)
         awaitClose { ref.removeEventListener(listener) }
     }
+
 
     override fun addMood(mood: Mood) {
         val uid = auth.currentUser?.uid ?: return
