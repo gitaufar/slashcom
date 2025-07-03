@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.slashcom.R
-import com.example.slashcom.ui.presentation.recorder.RecorderState
+import com.example.slashcom.ui.presentation.user.recorder.RecorderState
 
 @Composable
 fun QuestionCard(
@@ -78,6 +78,7 @@ fun QuestionCard(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
+                    modifier = Modifier.fillMaxWidth(),
                     text = if (isIdle) "${index + 1}. $question" else question,
                     style = TextStyle(
                         fontSize = 14.sp,

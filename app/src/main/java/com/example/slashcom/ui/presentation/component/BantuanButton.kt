@@ -29,7 +29,7 @@ fun BantuanButton(
         modifier = modifier
             .width(372.dp)
             .height(58.dp)
-            .background(color = Color(0xFFFDF2FE), shape = RoundedCornerShape(size = 15.dp))
+            .background(color = Color(0xFFFEF2F2), shape = RoundedCornerShape(size = 15.dp))
             .padding(horizontal = 15.dp, vertical = 15.dp)
     ) {
         Row(
@@ -48,7 +48,7 @@ fun BantuanButton(
                     fontSize = 16.sp,
                     lineHeight = 28.sp,
                     fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                    color = Color(0xFFDC26D9),
+                    color = Color(0xFFEF4444),
                 )
             )
         }

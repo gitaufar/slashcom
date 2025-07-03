@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.recorder
+package com.example.slashcom.ui.presentation.user.recorder
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -85,8 +85,8 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
         Row(
             modifier = Modifier
                 .border(width = 0.3.dp, color = Color(0xFF7F7F7F))
-                .height(80.dp)
-                .padding(start = 20.dp, top = 30.dp, end = 20.dp, bottom = 20.dp),
+                .height(90.dp)
+                .padding(start = 20.dp, top = 40.dp, end = 20.dp, bottom = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -158,7 +158,11 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
                 RecorderState.Recording -> RecorderText(text = "Tekan untuk Berhenti")
                 RecorderState.Finished -> BlueButtonFull(
                     text = "Lihat Hasil",
-                    onClick = { viewModel.playRecording(context) })
+                    onClick = {
+//                        viewModel.playRecording(context)
+                        navController.navigate("hasil")
+                    }
+                )
             }
         }
     }
