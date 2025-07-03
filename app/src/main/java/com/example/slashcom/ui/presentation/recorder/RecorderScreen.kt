@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.slashcom.R
 import com.example.slashcom.cache.ListQuestion
 import com.example.slashcom.ui.presentation.component.BlueButtonFull
@@ -36,7 +38,7 @@ enum class RecorderState {
 }
 
 @Composable
-fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), modifier: Modifier = Modifier) {
+fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: NavController) {
     val context = LocalContext.current
     var recorderState by remember { mutableStateOf(RecorderState.Idle) }
     val questions = remember { ListQuestion.getRandomQuestions(5) }
@@ -92,7 +94,8 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), modifier: Modifie
                 modifier = Modifier
                     .padding(1.dp)
                     .width(30.dp)
-                    .height(30.dp),
+                    .height(30.dp)
+                    .clickable { navController.navigate("dashboard") },
                 painter = painterResource(id = R.drawable.arrow_back),
                 contentDescription = "arrow_back",
             )

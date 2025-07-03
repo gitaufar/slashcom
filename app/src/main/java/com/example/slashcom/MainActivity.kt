@@ -3,6 +3,7 @@ package com.example.slashcom
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -51,6 +53,7 @@ import com.example.slashcom.ui.presentation.splash.SplashScreen
 import com.example.slashcom.ui.theme.SlashcomTheme
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -60,7 +63,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "dashboard"
+                        startDestination = "splash"
                     ) {
                         composable("splash") { SplashScreen(navController) }
                         composable("onboard") { Onboarding1(navController) }
@@ -84,9 +87,7 @@ class MainActivity : ComponentActivity() {
                         composable("riwayat") { RiwayatScreen(navController) }
                         composable("recorder") {
                             RecorderScreen(
-                                modifier = Modifier.padding(
-                                    innerPadding
-                                )
+                                navController = navController
                             )
                         }
                     }

@@ -87,7 +87,9 @@ fun DashboardScreen(navController: NavController) {
                     description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
                 )
 
-                CheckSuaraCard(onClick = {})
+                CheckSuaraCard(onClick = {
+                    navController.navigate("recorder")
+                })
 
                 BantuanButton(
                     text = "Bantuan Darurat",
