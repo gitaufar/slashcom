@@ -148,7 +148,13 @@ fun LoginScreen(
             LaunchedEffect(Unit) {
                 Toast.makeText(context, UserData.isIbu.toString(), Toast.LENGTH_SHORT).show()
                 if (UserData.isIbu) {
-                    navController.navigate("dashboard") {
+                    navController.navigate("userDashboard") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                }
+
+                else {
+                    navController.navigate("pendampingDashboard") {
                         popUpTo("login") { inclusive = true }
                     }
                 }
