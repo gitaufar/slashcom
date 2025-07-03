@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.componen
+package com.example.slashcom.ui.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth

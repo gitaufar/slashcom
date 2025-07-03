@@ -41,6 +41,7 @@ import androidx.navigation.navArgument
 import com.example.slashcom.ui.presentation.auth.LoginScreen
 import com.example.slashcom.ui.presentation.auth.PilihRole
 import com.example.slashcom.ui.presentation.auth.RegisterScreen
+import com.example.slashcom.ui.presentation.dashboard.DashboardScreen
 import com.example.slashcom.ui.presentation.onboard.GetStarted
 import com.example.slashcom.ui.presentation.onboard.Onboarding1
 import com.example.slashcom.ui.presentation.onboard.Onboarding2
@@ -58,14 +59,15 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "splash"
-                    ){
+                        startDestination = "dashboard"
+                    ) {
                         composable("splash") { SplashScreen(navController) }
                         composable("onboard") { Onboarding1(navController) }
                         composable("onboard2") { Onboarding2(navController) }
                         composable("getStarted") { GetStarted(navController) }
                         composable("login") { LoginScreen(navController = navController) }
                         composable("pilihRole") { PilihRole(navController) }
+                        composable("dashboard") { DashboardScreen(navController) }
                         composable(
                             "register?isIbu={isIbu}",
                             arguments = listOf(
@@ -77,7 +79,14 @@ class MainActivity : ComponentActivity() {
                             val isIbu = backStackEntry.arguments?.getBoolean("isIbu") ?: false
                             RegisterScreen(isIbu = isIbu, navController = navController)
                         }
-                        composable("recorder") { RecorderScreen(modifier = Modifier.padding(innerPadding)) }
+                        composable("dashboard") { DashboardScreen(navController) }
+                        composable("recorder") {
+                            RecorderScreen(
+                                modifier = Modifier.padding(
+                                    innerPadding
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -90,7 +99,10 @@ fun CheckAudioPermission() {
     val context = LocalContext.current
     var hasPermission by remember {
         mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
         )
     }
 

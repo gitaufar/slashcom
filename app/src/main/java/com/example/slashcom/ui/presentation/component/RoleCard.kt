@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.componen
+package com.example.slashcom.ui.presentation.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

@@ -2,6 +2,7 @@ package com.example.slashcom.ui.presentation.auth
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -22,8 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
-import com.example.slashcom.ui.presentation.componen.AuthEditText
-import com.example.slashcom.ui.presentation.componen.BlueButtonFull
+import com.example.slashcom.ui.presentation.component.AuthEditText
+import com.example.slashcom.ui.presentation.component.BlueButtonFull
 
 @Composable
 fun RegisterScreen(
@@ -50,24 +53,20 @@ fun RegisterScreen(
                     )
                 )
             )
-            .padding(horizontal = 30.dp, vertical = 120.dp),
+            .padding(horizontal = 30.dp, vertical = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "[logo]",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    lineHeight = 28.sp,
-                    fontFamily = FontFamily(Font(R.font.poppins_bold)),
-                    fontWeight = FontWeight(700),
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                )
+            Image(
+                painter = painterResource(R.drawable.logo_ibu),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .height(120.dp),
+                contentScale = ContentScale.FillHeight
             )
             AuthEditText(
                 value = username,
@@ -101,8 +100,8 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             BlueButtonFull(onClick = {
-                viewModel.register(email,password,confirmPassword,username,isIbu)
-            }, text = "Login", state = registerState)
+                viewModel.register(email, password, confirmPassword, username, isIbu)
+            }, text = "Register", state = registerState)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -112,8 +111,7 @@ fun RegisterScreen(
                     style = TextStyle(
                         fontSize = 14.sp,
                         lineHeight = 21.sp,
-                        fontFamily = FontFamily(Font(R.font.poppins_bold)),
-                        fontWeight = FontWeight(700),
+                        fontFamily = FontFamily(Font(R.font.poppins_medium)),
                         color = Color(0xFF555555),
                         textAlign = TextAlign.Center,
                     )
@@ -141,6 +139,7 @@ fun RegisterScreen(
                 viewModel.resetRegisterState()
             }
         }
+
         is State.Error -> {
             val message = (registerState as State.Error).message
             LaunchedEffect(message) {
@@ -148,6 +147,7 @@ fun RegisterScreen(
                 viewModel.resetRegisterState()
             }
         }
+
         else -> Unit
     }
 }

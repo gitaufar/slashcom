@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.slashcom.R
-import com.example.slashcom.ui.presentation.componen.BlueButtonFull
-import com.example.slashcom.ui.presentation.componen.RoleCard
+import com.example.slashcom.ui.presentation.component.BlueButtonFull
+import com.example.slashcom.ui.presentation.component.RoleCard
 
 @Composable
 fun PilihRole(
@@ -49,7 +49,7 @@ fun PilihRole(
                     )
                 )
             )
-            .padding(horizontal = 30.dp, vertical = 180.dp),
+            .padding(horizontal = 30.dp, vertical = 150.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
