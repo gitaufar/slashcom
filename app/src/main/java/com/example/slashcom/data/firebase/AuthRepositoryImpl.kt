@@ -43,7 +43,7 @@ class AuthRepositoryImpl(
                                             .child("id")
                                             .setValue(uniqueCode)
                                             .addOnSuccessListener {
-                                                UserData.uid = userId
+                                                UserData.isIbu = isIbu
                                                 onResult(true, null)
                                             }
                                             .addOnFailureListener { e ->
