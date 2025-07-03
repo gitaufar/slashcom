@@ -6,6 +6,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -20,7 +24,15 @@ import com.example.slashcom.ui.presentation.component.*
 
 //@Preview
 @Composable
-fun DashboardScreen(navController: NavController) {
+fun DashboardScreen(navController: NavController, viewModel: DashboardViewModel = remember { DashboardViewModel() }) {
+
+    val lastMood by viewModel.lastMood.collectAsState()
+    val uid = UserData.uid
+
+    LaunchedEffect(uid) {
+        viewModel.loadLastMood(uid)
+    }
+
     Scaffold(
         containerColor = Color(0xFFD1E8FF),
         bottomBar = {
@@ -78,8 +90,8 @@ fun DashboardScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    EmosiIbuCard(emosi = "normal", modifier = Modifier.weight(1f))
-                    LevelStressCard(level = 3, modifier = Modifier.weight(1f))
+                    EmosiIbuCard(emosi = lastMood?.emosi ?: "normal", modifier = Modifier.weight(1f))
+                    LevelStressCard(level = lastMood?.stress ?: 3, modifier = Modifier.weight(1f))
                 }
 
                 SaranCard(
@@ -87,7 +99,9 @@ fun DashboardScreen(navController: NavController) {
                     description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
                 )
 
-                CheckSuaraCard(onClick = {})
+                CheckSuaraCard(onClick = {
+                    navController.navigate("recorder")
+                })
 
                 BantuanButton(
                     text = "Bantuan Darurat",
