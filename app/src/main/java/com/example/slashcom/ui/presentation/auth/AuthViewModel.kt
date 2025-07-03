@@ -1,6 +1,7 @@
 package com.example.slashcom.ui.presentation.auth
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import com.example.slashcom.cache.PreferencedKey
@@ -73,8 +74,17 @@ class AuthViewModel : ViewModel() {
     suspend fun saveUid(context: Context, uid: String) {
         _verifikasiState.value = State.Loading
         try {
+            val trimmedUid = uid.trim()
+            val exists = authUseCase.isIbuIdExists(trimmedUid)
+            Log.d("cek uid", "exists: $exists")
+
+            if (!exists) {
+                _verifikasiState.value = State.Error("Tidak ada UID yang cocok")
+                return
+            }
+
             context.dataStore.edit { preferences ->
-                preferences[PreferencedKey.uidIbu] = uid
+                preferences[PreferencedKey.uidIbu] = trimmedUid
             }
             _verifikasiState.value = State.Success
         } catch (e: Exception) {

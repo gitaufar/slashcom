@@ -1,5 +1,6 @@
 package com.example.slashcom.ui.presentation.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -19,15 +21,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
+import com.example.slashcom.cache.UserData
 import com.example.slashcom.ui.presentation.component.AuthEditText
+import com.example.slashcom.ui.presentation.component.BlueButtonFull
+import kotlinx.coroutines.launch
 
 @Composable
 fun VerifikasiPendampingScreen(
-    navController: NavController,
+    navController: NavController, viewModel: AuthViewModel = viewModel()
 ) {
     var kodeValue by remember { mutableStateOf("") }
+    val verifikasiState by viewModel.verifikasiState.collectAsState()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -41,22 +50,17 @@ fun VerifikasiPendampingScreen(
                     )
                 )
             )
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(80.dp))
 
-        // Title
         Text(
-            text = "Verifikasi Pendamping",
-            style = TextStyle(
+            text = "Verifikasi Pendamping", style = TextStyle(
                 fontSize = 24.sp,
                 fontFamily = FontFamily(Font(R.font.poppins_bold)),
                 fontWeight = FontWeight(700),
                 color = Color(0xFF0B1957),
-            ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 24.dp)
+            ), textAlign = TextAlign.Center, modifier = Modifier.padding(bottom = 24.dp)
         )
 
         // Description
@@ -85,27 +89,26 @@ fun VerifikasiPendampingScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         // Verifikasi Button
-        Button(
-            onClick = {  },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF4A90E2)
-            ),
-            shape = RoundedCornerShape(25.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-        ) {
-            Text(
-                text = "Verifikasi",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.poppins_bold)),
-                    fontWeight = FontWeight(600),
-                    color = Color.White
-                )
-            )
+        BlueButtonFull(
+            text = "Verifikasi", onClick = {
+                viewModel.viewModelScope.launch {
+                    viewModel.saveUid(context, kodeValue)
+                }
+            }, state = verifikasiState
+        )
+        when (verifikasiState) {
+            is State.Success -> {
+                navController.navigate("pendampingDashboard") {
+                    popUpTo("verifikasi") { inclusive = true }
+                }
+                Toast.makeText(context, "Berhasil menghubungkan dengan si ibu😁💕", Toast.LENGTH_SHORT).show()
+            }
+            is State.Error -> {
+                val message = (verifikasiState as State.Error).message
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+            else -> Unit
         }
-
         Spacer(modifier = Modifier.height(32.dp))
     }
 }
