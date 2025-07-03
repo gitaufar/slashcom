@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.dashboard
+package com.example.slashcom.ui.presentation.riwayat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,22 +9,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class DashboardViewModel(
+class RiwayatViewModel(
     private val repository: DashboardRepositoryImpl = DashboardRepositoryImpl()
-) : ViewModel() {
+) :
+    ViewModel() {
+    private val _moodList = MutableStateFlow<List<Mood>>(emptyList())
+    val moodList: StateFlow<List<Mood>> = _moodList
 
-    private val _lastMood = MutableStateFlow<Mood?>(null)
-    val lastMood: StateFlow<Mood?> = _lastMood
-
-    fun loadLastMood(uid: String) {
+    fun loadMoods(uid: String) {
         viewModelScope.launch {
-            repository.getLastMood(uid)
+            repository.getMoods(uid)
                 .catch { e -> e.printStackTrace() }
-                .collect { mood -> _lastMood.value = mood }
+                .collect { moods -> _moodList.value = moods }
         }
-    }
-
-    fun addMood(mood: Mood) {
-        repository.addMood(mood)
     }
 }
