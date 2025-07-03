@@ -46,6 +46,7 @@ import com.example.slashcom.ui.presentation.onboard.GetStarted
 import com.example.slashcom.ui.presentation.onboard.Onboarding1
 import com.example.slashcom.ui.presentation.onboard.Onboarding2
 import com.example.slashcom.ui.presentation.recorder.RecorderScreen
+import com.example.slashcom.ui.presentation.riwayat.RiwayatScreen
 import com.example.slashcom.ui.presentation.splash.SplashScreen
 import com.example.slashcom.ui.theme.SlashcomTheme
 
@@ -80,6 +81,7 @@ class MainActivity : ComponentActivity() {
                             RegisterScreen(isIbu = isIbu, navController = navController)
                         }
                         composable("dashboard") { DashboardScreen(navController) }
+                        composable("riwayat") { RiwayatScreen(navController) }
                         composable("recorder") {
                             RecorderScreen(
                                 modifier = Modifier.padding(

@@ -9,7 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -31,18 +33,23 @@ fun BottomNavBar(
 ) {
     Box(
         modifier = Modifier
+            .drawBehind {
+                drawLine(
+                    color = Color(0xFFD3D3D3),
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = 2.dp.toPx()
+                )
+            }
             .shadow(
                 elevation = 6.dp,
                 spotColor = Color(0x33000000),
                 ambientColor = Color(0x33000000)
             )
             .fillMaxWidth()
-            .height(90.dp)
-            .background(
-                color = Color.White,
-                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
-            )
-            .padding(top = 10.dp, bottom = 20.dp, start = 20.dp, end = 20.dp)
+            .height(80.dp)
+            .background(color = Color.White,)
+            .padding(top = 5.dp, bottom = 20.dp, start = 20.dp, end = 20.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -59,7 +66,7 @@ fun BottomNavBar(
                 icon = R.drawable.ic_riwayat,
                 label = "riwayat",
                 isSelected = selected == "riwayat",
-                onClick = { /* navController.navigate("riwayat") */ }
+                onClick = { navController.navigate("riwayat") }
             )
             NavItem(
                 icon = R.drawable.ic_profil,
@@ -79,7 +86,7 @@ fun NavItem(
     onClick: () -> Unit
 ) {
     val activeColor = Color(0xFF2D82D5)
-    val inactiveColor = Color(0xFF7F7F7F)
+    val inactiveColor = Color(0xFFD3D3D3)
     val tintColor = if (isSelected) activeColor else inactiveColor
 
     Column(
