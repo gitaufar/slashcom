@@ -57,6 +57,7 @@ class AuthRepositoryImpl(
                             UserData.userName = userData?.username ?: ""
                             UserData.uid = uid
                             UserData.isIbu = userData?.isIbu ?: false
+                            UserData.email = userData?.email ?: ""
                             onResult(true, null)
                             Log.d("Firebase", "Data: $userData")
                         } else {
