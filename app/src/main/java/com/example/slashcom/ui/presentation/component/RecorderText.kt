@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.componen
+package com.example.slashcom.ui.presentation.component
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

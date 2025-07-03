@@ -26,10 +26,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.slashcom.R
 import com.example.slashcom.cache.ListQuestion
-import com.example.slashcom.ui.presentation.componen.BlueButtonFull
-import com.example.slashcom.ui.presentation.componen.QuestionCard
-import com.example.slashcom.ui.presentation.componen.RecorderText
-import com.example.slashcom.ui.presentation.componen.VoiceRecorder
+import com.example.slashcom.ui.presentation.component.BlueButtonFull
+import com.example.slashcom.ui.presentation.component.QuestionCard
+import com.example.slashcom.ui.presentation.component.RecorderText
+import com.example.slashcom.ui.presentation.component.VoiceRecorder
 
 enum class RecorderState {
     Idle, Recording, Finished
