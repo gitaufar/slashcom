@@ -95,7 +95,7 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
                     .padding(1.dp)
                     .width(30.dp)
                     .height(30.dp)
-                    .clickable { navController.navigate("dashboard") },
+                    .clickable { navController.navigate("userDashboard") },
                 painter = painterResource(id = R.drawable.arrow_back),
                 contentDescription = "arrow_back",
             )

@@ -8,4 +8,5 @@ object UserData {
     var isIbu: Boolean = false
     var lastMood: Mood? = null
     var listMoods: List<Mood>? = null
+    var email: String = ""
 }

@@ -97,7 +97,7 @@ fun HasilAnalisisScreen(navController: NavController) {
 
             BlueButtonFull(
                 text = "Selesai",
-                onClick = { navController.navigate("dashboard") }
+                onClick = { navController.navigate("userDashboard") }
             )
 
             Spacer(modifier = Modifier.height(24.dp))

@@ -28,11 +28,13 @@ import androidx.navigation.navArgument
 import com.example.slashcom.ui.presentation.auth.LoginScreen
 import com.example.slashcom.ui.presentation.auth.PilihRole
 import com.example.slashcom.ui.presentation.auth.RegisterScreen
+import com.example.slashcom.ui.presentation.auth.VerifikasiPendampingScreen
+import com.example.slashcom.ui.presentation.user.dashboard.UserDashboardScreen
 import com.example.slashcom.ui.presentation.component.ProfilScreen
-import com.example.slashcom.ui.presentation.user.dashboard.DashboardScreen
 import com.example.slashcom.ui.presentation.onboard.GetStarted
 import com.example.slashcom.ui.presentation.onboard.Onboarding1
 import com.example.slashcom.ui.presentation.onboard.Onboarding2
+import com.example.slashcom.ui.presentation.pendamping.dashboard.PendampingDashboardScreen
 import com.example.slashcom.ui.presentation.user.recorder.RecorderScreen
 import com.example.slashcom.ui.presentation.user.riwayat.RiwayatScreen
 import com.example.slashcom.ui.presentation.splash.SplashScreen
@@ -59,7 +61,7 @@ class MainActivity : ComponentActivity() {
                         composable("getStarted") { GetStarted(navController) }
                         composable("login") { LoginScreen(navController = navController) }
                         composable("pilihRole") { PilihRole(navController) }
-                        composable("dashboard") { DashboardScreen(navController) }
+                        composable("userDashboard") { UserDashboardScreen(navController) }
                         composable(
                             "register?isIbu={isIbu}",
                             arguments = listOf(
@@ -71,7 +73,6 @@ class MainActivity : ComponentActivity() {
                             val isIbu = backStackEntry.arguments?.getBoolean("isIbu") ?: false
                             RegisterScreen(isIbu = isIbu, navController = navController)
                         }
-                        composable("dashboard") { DashboardScreen(navController) }
                         composable("riwayat") { RiwayatScreen(navController) }
                         composable("profil") {
                             ProfilScreen(
@@ -95,6 +96,8 @@ class MainActivity : ComponentActivity() {
                                 navController = navController
                             )
                         }
+                        composable("pendampingDashboard") { PendampingDashboardScreen(navController) }
+                        composable("verifikasi") { VerifikasiPendampingScreen(navController) }
                     }
                 }
             }
