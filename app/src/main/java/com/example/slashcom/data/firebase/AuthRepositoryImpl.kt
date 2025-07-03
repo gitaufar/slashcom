@@ -50,7 +50,7 @@ class AuthRepositoryImpl(
         firebaseAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val uid = firebaseAuth.currentUser?.uid ?: ""
+                    val uid = getCurrentUserId() ?: ""
                     database.child("user").child(uid).get().addOnSuccessListener { snapshot ->
                         if (snapshot.exists()) {
                             val userData = snapshot.getValue(User::class.java)
