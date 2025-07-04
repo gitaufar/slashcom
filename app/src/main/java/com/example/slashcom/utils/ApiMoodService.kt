@@ -1,4 +1,5 @@
 package com.example.slashcom.utils
 
-object ApiService {
+object ApiMoodService {
+
 }

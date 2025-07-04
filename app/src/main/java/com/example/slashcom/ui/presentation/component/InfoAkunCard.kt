@@ -67,7 +67,7 @@ fun InfoAkunCard(
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            InfoItem(label = "Username", value = "@$username")
+            InfoItem(label = "Username", value = username)
             InfoItem(label = "Email", value = email)
         }
     }
@@ -77,7 +77,7 @@ fun InfoAkunCard(
 private fun InfoItem(label: String, value: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-            text = "$label     :",
+            text = label,
             modifier = Modifier.width(110.dp),
             style = TextStyle(
                 fontSize = 14.sp,
@@ -87,7 +87,7 @@ private fun InfoItem(label: String, value: String) {
             )
         )
         Text(
-            text = value,
+            text = ": $value",
             style = TextStyle(
                 fontSize = 14.sp,
                 lineHeight = 28.sp,

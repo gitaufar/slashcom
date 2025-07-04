@@ -21,18 +21,20 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.slashcom.R
+import com.example.slashcom.cache.UserData
 
 @Composable
 fun ProfilScreen(
-    fullName: String,
-    userId: String,
-    username: String,
-    email: String,
-    companionName: String,
     navController: NavController,
     onEditClick: () -> Unit,
     onDeleteCompanionClick: () -> Unit
 ) {
+    // Ambil data dari cache
+    val fullName = UserData.userName
+    val userId = UserData.id
+    val username = UserData.userName
+    val email = UserData.email
+
     Scaffold(
         containerColor = Color(0xFFD1E8FF),
         bottomBar = {
@@ -77,7 +79,7 @@ fun ProfilScreen(
                             color = Color.White,
                             shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
                         )
-                        .padding(bottom = 320.dp)
+                        .padding(bottom = 240.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -88,13 +90,12 @@ fun ProfilScreen(
                     ) {
                         // Avatar & Nama
                         Column(
-                            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .width(60.dp)
-                                    .height(60.dp)
+                                    .size(60.dp)
                                     .background(
                                         brush = Brush.linearGradient(
                                             colors = listOf(Color(0xFFF472B6), Color(0xFFC084FC))
@@ -107,52 +108,51 @@ fun ProfilScreen(
                                     text = fullName.firstOrNull()?.uppercase() ?: "?",
                                     style = TextStyle(
                                         fontSize = 24.sp,
-                                        lineHeight = 28.sp,
                                         fontFamily = FontFamily(Font(R.font.poppins_semibold)),
-                                        color = Color.White,
-                                        textAlign = TextAlign.Center
+                                        color = Color.White
                                     )
                                 )
                             }
 
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.CenterVertically),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
                                     text = fullName,
                                     style = TextStyle(
                                         fontSize = 16.sp,
-                                        lineHeight = 28.sp,
                                         fontFamily = FontFamily(Font(R.font.poppins_semibold)),
-                                        color = Color(0xFF121212),
-                                        textAlign = TextAlign.Center
+                                        color = Color(0xFF121212)
                                     )
                                 )
                                 Text(
                                     text = "ID: $userId",
                                     style = TextStyle(
                                         fontSize = 16.sp,
-                                        lineHeight = 28.sp,
                                         fontFamily = FontFamily(Font(R.font.poppins_regular)),
-                                        color = Color(0xFF7F7F7F),
-                                        textAlign = TextAlign.Center
+                                        color = Color(0xFF7F7F7F)
                                     )
                                 )
                             }
                         }
 
-                        // Info Akun Card
-                        InfoAkunCard(
-                            username = username,
-                            email = email,
-                            onEditClick = onEditClick
-                        )
+                        InfoAkunCard(username = username, email = email, onEditClick = onEditClick)
 
-                        // Pendamping Card
-                        PendampingCard(
-                            name = companionName,
-                            onDeleteClick = onDeleteCompanionClick
+                        PendampingCard(name = "Adi Wijaya", onDeleteClick = onDeleteCompanionClick)
+
+                        BantuanButton(
+                            text = "Logout",
+                            iconResId = R.drawable.ic_logout,
+                            onClick = {
+                                UserData.userName = ""
+                                UserData.id = ""
+                                UserData.email = ""
+                                UserData.isIbu = false
+                                UserData.lastMood = null
+                                UserData.listMoods = null
+
+                                navController.navigate("login") {
+                                    popUpTo(0) { inclusive = true }
+                                }
+                            }
                         )
                     }
                 }
@@ -161,17 +161,13 @@ fun ProfilScreen(
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewProfilScreen() {
-//    ProfilScreen(
-//        fullName = "Safira Rahma",
-//        userId = "849349",
-//        username = "safirarhm",
-//        email = "safirarhm@gmail.com",
-//        companionName = "Adi Wijaya",
-//        navController = rememberNavController(),
-//        onEditClick = {},
-//        onDeleteCompanionClick = {}
-//    )
-//}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewProfilScreen() {
+    ProfilScreen(
+        navController = rememberNavController(),
+        onEditClick = {},
+        onDeleteCompanionClick = {}
+    )
+}

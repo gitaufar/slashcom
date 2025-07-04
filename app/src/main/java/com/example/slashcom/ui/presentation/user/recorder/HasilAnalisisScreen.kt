@@ -1,9 +1,10 @@
-package com.example.slashcom.ui.presentation.user.result
+package com.example.slashcom.ui.presentation.user.recorder
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,16 +18,21 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.slashcom.R
 import com.example.slashcom.ui.presentation.component.*
 
 @Composable
-fun HasilAnalisisScreen(navController: NavController) {
+fun HasilAnalisisScreen(
+    viewModel: RecorderViewModel = viewModel(),
+    navController: NavController
+) {
+
+    val isKrisis = viewModel.isKrisis.value
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,39 +81,54 @@ fun HasilAnalisisScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Konten
-        Column(
+        // Konten pakai LazyColumn
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.Top),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(top = 24.dp, bottom = 24.dp)
         ) {
-            Spacer(modifier = Modifier.height(4.dp))
-            EmosiTerdeteksiCard(emosi = "Lelah")
-            TingkatStresCard(level = 6)
-            BantuanButton(
-                text = "Fase Kritis Terdeteksi",
-                iconResId = R.drawable.ic_alert
-            )
-            SaranCard(
-                title = "Saran Buat Ibu",
-                description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            )
+            item {
+                EmosiTerdeteksiCard(emosi = "Lelah")
+            }
 
-            BlueButtonFull(
-                text = "Selesai",
-                onClick = { navController.navigate("userDashboard") }
-            )
+            item {
+                TingkatStresCard(level = 6)
+            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            if (isKrisis == true) {
+                item {
+                    BantuanButton(
+                        text = "Fase Kritis Terdeteksi",
+                        iconResId = R.drawable.ic_alert,
+                        onClick = {}
+                    )
+                }
+            }
+
+            item {
+                BantuanButton(
+                    text = "Fase Krisis Terdeteksi",
+                    iconResId = R.drawable.ic_alert,
+                    onClick = {}
+                )
+            }
+
+            item {
+                SaranCard(
+                    title = "Saran Buat Ibu",
+                    description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+                )
+            }
+
+            item {
+                BlueButtonFull(
+                    text = "Selesai",
+                    onClick = { navController.navigate("userDashboard") }
+                )
+            }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewHasilAnalisisScreen() {
-    val navController = rememberNavController()
-    HasilAnalisisScreen(navController)
 }
