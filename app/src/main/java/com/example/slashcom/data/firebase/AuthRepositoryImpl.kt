@@ -11,7 +11,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl(
@@ -36,7 +39,7 @@ class AuthRepositoryImpl(
                             .child(userId)
                             .setValue(user)
                             .addOnSuccessListener {
-                                if(user.isIbu){
+                                if (user.isIbu) {
                                     generateUniqueCode { uniqueCode ->
                                         if (uniqueCode != null) {
                                             // Simpan ke path ibu/userId/id
@@ -49,7 +52,10 @@ class AuthRepositoryImpl(
                                                     onResult(true, null)
                                                 }
                                                 .addOnFailureListener { e ->
-                                                    onResult(false, "Gagal simpan kode: ${e.message}")
+                                                    onResult(
+                                                        false,
+                                                        "Gagal simpan kode: ${e.message}"
+                                                    )
                                                 }
                                         } else {
                                             onResult(false, "Gagal generate kode unik")
@@ -152,11 +158,24 @@ class AuthRepositoryImpl(
 
     override fun setPendampingForIbu(uidPendamping: String, uidIbu: String): Boolean {
         return try {
-            if (UserData.listPendamping.contains(uidPendamping)) return true
+            val ref = FirebaseProvider.database
+                .child("ibu")
+                .child(uidIbu)
+                .child("pendamping")
+                .child(uidPendamping)
 
-            val ref = database.child("ibu").child(uidIbu).child("pendamping")
-            ref.push().setValue(uidPendamping)
-            UserData.listPendamping += uidPendamping
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!snapshot.exists()) {
+                        ref.setValue(true)
+                        UserData.listPendamping += uidPendamping
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    error.toException().printStackTrace()
+                }
+            })
 
             true
         } catch (e: Exception) {
@@ -164,6 +183,7 @@ class AuthRepositoryImpl(
             false
         }
     }
+
 
     override suspend fun getIbuUidById(randomCode: String): String? {
         val ibuRef = FirebaseProvider.database.child("ibu")

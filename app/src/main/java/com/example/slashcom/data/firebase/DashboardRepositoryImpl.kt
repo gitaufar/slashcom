@@ -49,7 +49,8 @@ class DashboardRepositoryImpl(
 
         val pendampingListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val pendampingIds = snapshot.children.mapNotNull { it.getValue(String::class.java) }
+                // Ambil key dari map sebagai UID pendamping
+                val pendampingIds = snapshot.children.mapNotNull { it.key }
 
                 Log.d("getPendamping", "Jumlah UID pendamping: ${pendampingIds.size}")
 
@@ -59,16 +60,14 @@ class DashboardRepositoryImpl(
                     return
                 }
 
+                // Ambil nama-nama pendamping berdasarkan UID
                 ambilNamaPendamping(pendampingIds) { namaList ->
                     if (UserData.listPendamping != namaList) {
                         UserData.listPendamping = namaList
                         trySend(namaList).isSuccess
                         Log.d("getPendamping", "Berhasil ambil nama-nama: $namaList")
                     } else {
-                        Log.d(
-                            "getPendamping",
-                            "Nama pendamping sama dengan cache, tidak dikirim ulang."
-                        )
+                        Log.d("getPendamping", "Nama pendamping sama dengan cache, tidak dikirim ulang.")
                     }
                 }
             }
