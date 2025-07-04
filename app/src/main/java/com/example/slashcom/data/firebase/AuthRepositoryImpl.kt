@@ -36,24 +36,27 @@ class AuthRepositoryImpl(
                             .child(userId)
                             .setValue(user)
                             .addOnSuccessListener {
-                                // Setelah user berhasil disimpan, generate kode unik
-                                generateUniqueCode { uniqueCode ->
-                                    if (uniqueCode != null) {
-                                        // Simpan ke path ibu/userId/id
-                                        database.child("ibu")
-                                            .child(userId)
-                                            .child("id")
-                                            .setValue(uniqueCode)
-                                            .addOnSuccessListener {
-                                                UserData.isIbu = isIbu
-                                                onResult(true, null)
-                                            }
-                                            .addOnFailureListener { e ->
-                                                onResult(false, "Gagal simpan kode: ${e.message}")
-                                            }
-                                    } else {
-                                        onResult(false, "Gagal generate kode unik")
+                                if(user.isIbu){
+                                    generateUniqueCode { uniqueCode ->
+                                        if (uniqueCode != null) {
+                                            // Simpan ke path ibu/userId/id
+                                            database.child("ibu")
+                                                .child(userId)
+                                                .child("id")
+                                                .setValue(uniqueCode)
+                                                .addOnSuccessListener {
+                                                    UserData.isIbu = isIbu
+                                                    onResult(true, null)
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    onResult(false, "Gagal simpan kode: ${e.message}")
+                                                }
+                                        } else {
+                                            onResult(false, "Gagal generate kode unik")
+                                        }
                                     }
+                                } else {
+                                    onResult(true, null)
                                 }
                             }
                             .addOnFailureListener { e ->
@@ -81,12 +84,13 @@ class AuthRepositoryImpl(
                             UserData.uid = uid
                             UserData.isIbu = userData?.isIbu ?: false
                             UserData.email = userData?.email ?: ""
-                            database.child("ibu").child(UserData.uid).get().addOnSuccessListener { snapshot ->
-                                if(snapshot.exists()) {
-                                    val ibuData = snapshot.getValue(IbuData::class.java)
-                                    UserData.id = ibuData?.id ?: "kosong idnya"
+                            database.child("ibu").child(UserData.uid).get()
+                                .addOnSuccessListener { snapshot ->
+                                    if (snapshot.exists()) {
+                                        val ibuData = snapshot.getValue(IbuData::class.java)
+                                        UserData.id = ibuData?.id ?: "kosong idnya"
+                                    }
                                 }
-                            }
                             onResult(true, null)
                             Log.d("Firebase", "Data: $userData")
                         } else {
@@ -146,18 +150,34 @@ class AuthRepositoryImpl(
         tryGenerate()
     }
 
-    override suspend fun isIbuIdExists(randomCode: String): Boolean {
+    override fun setPendampingForIbu(uidPendamping: String, uidIbu: String): Boolean {
+        return try {
+            if (UserData.listPendamping.contains(uidPendamping)) return true
+
+            val ref = database.child("ibu").child(uidIbu).child("pendamping")
+            ref.push().setValue(uidPendamping)
+            UserData.listPendamping += uidPendamping
+
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override suspend fun getIbuUidById(randomCode: String): String? {
         val ibuRef = FirebaseProvider.database.child("ibu")
         return try {
             val snapshot = ibuRef.orderByChild("id").equalTo(randomCode).get().await()
             Log.d("FIREBASE_RESULT", "Children found: ${snapshot.childrenCount}")
             for (child in snapshot.children) {
                 Log.d("FIREBASE_RESULT", "UID: ${child.key}, Data: ${child.value}")
+                return child.key
             }
-            snapshot.exists()
+            null
         } catch (e: Exception) {
             e.printStackTrace()
-            false
+            null
         }
     }
 

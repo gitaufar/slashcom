@@ -29,7 +29,7 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
     val lastMood by viewModel.lastMood.collectAsState()
     val uid = UserData.uid
 
-    LaunchedEffect(uid) {
+    LaunchedEffect(UserData.lastMood) {
         viewModel.loadLastMood(uid)
     }
 

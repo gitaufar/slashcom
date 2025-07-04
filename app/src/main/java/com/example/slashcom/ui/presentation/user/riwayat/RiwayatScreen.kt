@@ -49,7 +49,7 @@ fun RiwayatScreen(
     viewModel: RiwayatViewModel = remember { RiwayatViewModel() },
 ) {
     val moodList by viewModel.moodList.collectAsState()
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     val uid = UserData.uid
     
     val lazyListState = rememberLazyListState()
@@ -139,7 +139,7 @@ fun RiwayatScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 
-                items(moodList) { item ->
+                items(moodList.reversed()) { item ->
                     RiwayatEmosiCard(
                         emosi = item.emosi,
                         tanggal = LocalDate.parse(item.date, formatter),

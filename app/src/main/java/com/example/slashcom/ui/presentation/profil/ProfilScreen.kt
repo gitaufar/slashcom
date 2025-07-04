@@ -6,6 +6,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -22,13 +26,22 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.slashcom.R
 import com.example.slashcom.cache.UserData
+import com.example.slashcom.ui.presentation.pendamping.dashboard.PendampingDashboardViewModel
+import com.example.slashcom.ui.presentation.profil.ProfilViewModel
 
 @Composable
 fun ProfilScreen(
     navController: NavController,
     onEditClick: () -> Unit,
-    onDeleteCompanionClick: () -> Unit
+    onDeleteCompanionClick: () -> Unit,
+    viewModel: ProfilViewModel = remember { ProfilViewModel() }
 ) {
+
+    val listPendamping by viewModel.listPendamping.collectAsState()
+    LaunchedEffect(UserData.listPendamping) {
+        viewModel.loadPendamping(UserData.uid)
+    }
+
     // Ambil data dari cache
     val fullName = UserData.userName
     val userId = UserData.id
@@ -124,7 +137,7 @@ fun ProfilScreen(
                                     )
                                 )
                                 Text(
-                                    text = "ID: $userId",
+                                    text = if(UserData.isIbu) "ID: $userId" else "-",
                                     style = TextStyle(
                                         fontSize = 16.sp,
                                         fontFamily = FontFamily(Font(R.font.poppins_regular)),
@@ -136,7 +149,9 @@ fun ProfilScreen(
 
                         InfoAkunCard(username = username, email = email, onEditClick = onEditClick)
 
-                        PendampingCard(name = "Adi Wijaya", onDeleteClick = onDeleteCompanionClick)
+                        listPendamping.forEach {
+                            PendampingCard(name = it, onDeleteClick = onDeleteCompanionClick)
+                        }
 
                         BantuanButton(
                             text = "Logout",

@@ -1,6 +1,7 @@
 package com.example.slashcom.data.repository
 
 import android.content.Context
+import android.util.Log
 import com.example.slashcom.cache.PreferencedKey
 import com.example.slashcom.cache.UserData
 import com.example.slashcom.cache.dataStore
@@ -25,6 +26,7 @@ class DashboardRepositoryImpl(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getMoodsFromAyah(context: Context): Flow<List<Mood>> {
         return getUid(context).flatMapLatest { uidIbu ->
+            Log.d("uid_ibu_list_mood", uidIbu.toString())
             if (uidIbu == null) {
                 flowOf(emptyList())
             } else {
@@ -36,7 +38,90 @@ class DashboardRepositoryImpl(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getLastMoodFromAyah(context: Context): Flow<Mood?> {
         return getUid(context).flatMapLatest { uidIbu ->
+            Log.d("uid_ibu", uidIbu.toString())
             uidIbu?.let { getLastMood(it) } ?: flowOf(null)
+        }
+    }
+
+    override fun getPendamping(uid: String): Flow<List<String>> = callbackFlow {
+        val pendampingRef = database.child("ibu").child(uid).child("pendamping")
+        Log.d("getPendamping", "Dipanggil untuk UID: $uid")
+
+        val pendampingListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val pendampingIds = snapshot.children.mapNotNull { it.getValue(String::class.java) }
+
+                Log.d("getPendamping", "Jumlah UID pendamping: ${pendampingIds.size}")
+
+                if (pendampingIds.isEmpty()) {
+                    Log.d("getPendamping", "Tidak ada pendamping ditemukan.")
+                    trySend(emptyList()).isSuccess
+                    return
+                }
+
+                ambilNamaPendamping(pendampingIds) { namaList ->
+                    if (UserData.listPendamping != namaList) {
+                        UserData.listPendamping = namaList
+                        trySend(namaList).isSuccess
+                        Log.d("getPendamping", "Berhasil ambil nama-nama: $namaList")
+                    } else {
+                        Log.d(
+                            "getPendamping",
+                            "Nama pendamping sama dengan cache, tidak dikirim ulang."
+                        )
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("getPendamping", "Database error: ${error.message}")
+                close(error.toException())
+            }
+        }
+
+        if (UserData.listPendamping.isNotEmpty()) {
+            Log.d("getPendamping", "Kirim dari cache: ${UserData.listPendamping}")
+            trySend(UserData.listPendamping).isSuccess
+        }
+
+        pendampingRef.addValueEventListener(pendampingListener)
+        awaitClose { pendampingRef.removeEventListener(pendampingListener) }
+    }
+
+    private fun ambilNamaPendamping(
+        ids: List<String>,
+        onComplete: (List<String>) -> Unit
+    ) {
+        val databaseRef = FirebaseProvider.database
+        val namaList = mutableListOf<String>()
+        var processedCount = 0
+
+        ids.forEach { id ->
+            databaseRef.child("user").child(id)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val username = snapshot.child("username").getValue(String::class.java)
+                        if (username != null) {
+                            namaList.add(username)
+                            Log.d("ambilNamaPendamping", "Ambil nama untuk $id: $username")
+                        } else {
+                            Log.w("ambilNamaPendamping", "Username tidak ditemukan untuk $id")
+                        }
+                        selesaiCek()
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("ambilNamaPendamping", "Gagal ambil data user $id: ${error.message}")
+                        selesaiCek()
+                    }
+
+                    fun selesaiCek() {
+                        processedCount++
+                        if (processedCount == ids.size) {
+                            onComplete(namaList)
+                        }
+                    }
+                })
         }
     }
 
@@ -100,7 +185,7 @@ class DashboardRepositoryImpl(
         }
     }
 
-    fun getUid(context: Context): Flow<String?> {
+    private fun getUid(context: Context): Flow<String?> {
         return context.dataStore.data.map { preferences ->
             preferences[PreferencedKey.uidIbu]
         }

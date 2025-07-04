@@ -10,4 +10,5 @@ object UserData {
     var lastMood: Mood? = null
     var listMoods: List<Mood>? = null
     var email: String = ""
+    var listPendamping: List<String> = emptyList()
 }

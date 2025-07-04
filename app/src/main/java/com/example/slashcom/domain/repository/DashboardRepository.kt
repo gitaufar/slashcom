@@ -9,5 +9,6 @@ interface DashboardRepository {
     fun getLastMood(uid: String): Flow<Mood?>
     fun getMoodsFromAyah(context: Context): Flow<List<Mood>>
     fun getLastMoodFromAyah(context: Context): Flow<Mood?>
+    fun getPendamping(uid: String): Flow<List<String>>
     fun addMood(mood: Mood): Unit
 }

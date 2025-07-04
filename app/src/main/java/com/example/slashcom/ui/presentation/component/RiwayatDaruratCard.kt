@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.slashcom.R
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle as JavaTextStyle
 import java.util.*
 
@@ -31,7 +33,7 @@ import java.util.*
 fun RiwayatDaruratCard(
     judul: String,
     tanggal: LocalDate,
-    waktu: String,
+    waktu: LocalDateTime,
     onClick: () -> Unit
 ) {
     val tanggalFormatted = tanggal.dayOfWeek.getDisplayName(JavaTextStyle.FULL, Locale("id"))
@@ -42,6 +44,8 @@ fun RiwayatDaruratCard(
                     Locale("id")
                 )
             } ${tanggal.year}"
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+    val waktuFormatted = waktu.format(formatter)
 
     Box(
         modifier = Modifier
@@ -98,7 +102,7 @@ fun RiwayatDaruratCard(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = waktu,
+                    text = waktuFormatted,
                     style = TextStyle(
                         fontSize = 16.sp,
                         lineHeight = 28.sp,
@@ -118,7 +122,7 @@ fun RiwayatDaruratCardPreview() {
     RiwayatDaruratCard(
         judul = "Ibu",
         tanggal = LocalDate.of(2025, 7, 3),
-        waktu = "22:38",
+        waktu = LocalDateTime.now(),
         onClick = {}
     )
 }

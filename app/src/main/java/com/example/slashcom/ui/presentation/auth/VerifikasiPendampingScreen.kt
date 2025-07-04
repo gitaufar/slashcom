@@ -92,7 +92,7 @@ fun VerifikasiPendampingScreen(
         BlueButtonFull(
             text = "Verifikasi", onClick = {
                 viewModel.viewModelScope.launch {
-                    viewModel.saveUid(context, kodeValue)
+                    viewModel.verifyAndSaveUid(context, kodeValue)
                 }
             }, state = verifikasiState
         )

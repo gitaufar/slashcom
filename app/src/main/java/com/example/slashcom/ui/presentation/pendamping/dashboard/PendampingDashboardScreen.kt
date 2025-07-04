@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,9 @@ import com.example.slashcom.R
 import com.example.slashcom.cache.UserData
 import com.example.slashcom.ui.presentation.component.*
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -40,22 +44,15 @@ fun PendampingDashboardScreen(
     viewModel: PendampingDashboardViewModel = remember { PendampingDashboardViewModel() }
 ) {
     val lastMood by viewModel.lastMood.collectAsState()
+    val listMood by viewModel.listMood.collectAsState()
     val context = LocalContext.current
     var activeTab by remember { mutableStateOf("riwayatEmosi") }
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
-    LaunchedEffect(context) {
+    LaunchedEffect(UserData.lastMood) {
         viewModel.loadLastMood(context)
+        viewModel.loadListMood(context)
     }
-
-    val riwayatEmosi = listOf(
-        RiwayatEmosiItem("Marah", LocalDate.of(2025, 7, 3), 6),
-        RiwayatEmosiItem("Cemas", LocalDate.of(2025, 7, 2), 4)
-    )
-
-    val riwayatDarurat = listOf(
-        RiwayatDaruratItem("Ibu butuh bantuan", LocalDate.of(2025, 7, 3), "22:38"),
-        RiwayatDaruratItem("Ibu merasa panik", LocalDate.of(2025, 7, 2), "21:15")
-    )
 
     Scaffold(
         containerColor = Color(0xFFD1E8FF),
@@ -139,7 +136,8 @@ fun PendampingDashboardScreen(
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.poppins_semibold)),
                             color = Color.Black,
-                            textDecoration = if (activeTab == "daruratTerkini") TextDecoration.Underline else TextDecoration.None
+                            textDecoration = if (activeTab == "daruratTerkini") TextDecoration.Underline else TextDecoration.None,
+                            textAlign = TextAlign.Center
                         ),
                         modifier = Modifier
                             .clickable { activeTab = "daruratTerkini" }
@@ -153,7 +151,8 @@ fun PendampingDashboardScreen(
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.poppins_semibold)),
                             color = Color.Black,
-                            textDecoration = if (activeTab == "riwayatEmosi") TextDecoration.Underline else TextDecoration.None
+                            textDecoration = if (activeTab == "riwayatEmosi") TextDecoration.Underline else TextDecoration.None,
+                            textAlign = TextAlign.Center
                         ),
                         modifier = Modifier
                             .clickable { activeTab = "riwayatEmosi" }
@@ -165,22 +164,22 @@ fun PendampingDashboardScreen(
                 // Konten tab aktif
                 if (activeTab == "riwayatEmosi") {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        riwayatEmosi.forEach { item ->
+                        listMood.reversed().forEach { item ->
                             RiwayatEmosiCard(
                                 emosi = item.emosi,
-                                tanggal = item.tanggal,
-                                tingkatStres = item.tingkatStres,
+                                tanggal = LocalDate.parse(item.date, formatter),
+                                tingkatStres = item.stress,
                                 onClick = { /* Handle click */ }
                             )
                         }
                     }
                 } else {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        riwayatDarurat.forEach { item ->
+                        listMood.filter { it.crisis }.forEach { item ->
                             RiwayatDaruratCard(
-                                judul = item.judul,
-                                tanggal = item.tanggal,
-                                waktu = item.waktu,
+                                judul = "Ibu merasa ${item.emosi}",
+                                tanggal = LocalDate.parse(item.date, formatter),
+                                waktu = LocalDateTime.parse(item.date, formatter),
                                 onClick = { /* Handle click */ }
                             )
                         }

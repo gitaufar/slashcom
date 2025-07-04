@@ -2,6 +2,7 @@ package com.example.slashcom.ui.presentation.user.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.slashcom.cache.UserData
 import com.example.slashcom.data.repository.DashboardRepositoryImpl
 import com.example.slashcom.domain.model.Mood
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,7 @@ class DashboardViewModel(
     private val repository: DashboardRepositoryImpl = DashboardRepositoryImpl()
 ) : ViewModel() {
 
-    private val _lastMood = MutableStateFlow<Mood?>(null)
+    private val _lastMood = MutableStateFlow<Mood?>(UserData.lastMood)
     val lastMood: StateFlow<Mood?> = _lastMood
 
     fun loadLastMood(uid: String) {
