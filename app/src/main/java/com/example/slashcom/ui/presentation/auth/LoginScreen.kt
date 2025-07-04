@@ -1,5 +1,6 @@
 package com.example.slashcom.ui.presentation.auth
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,9 +39,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
+import com.example.slashcom.cache.PreferencedKey
 import com.example.slashcom.cache.UserData
+import com.example.slashcom.cache.dataStore
 import com.example.slashcom.ui.presentation.component.AuthEditText
 import com.example.slashcom.ui.presentation.component.BlueButtonFull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun LoginScreen(
@@ -146,16 +151,22 @@ fun LoginScreen(
     when (loginState) {
         is State.Success -> {
             LaunchedEffect(Unit) {
-                Toast.makeText(context, UserData.isIbu.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Login Berhasil", Toast.LENGTH_SHORT).show()
                 if (UserData.isIbu) {
                     navController.navigate("userDashboard") {
                         popUpTo("login") { inclusive = true }
                     }
                 }
-
                 else {
-                    navController.navigate("pendampingDashboard") {
-                        popUpTo("login") { inclusive = true }
+                    val uid = getUidOnce(context)
+                    if(uid != null) {
+                        navController.navigate("pendampingDashboard") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate("verifikasi") {
+                            popUpTo("login") { inclusive = true }
+                        }
                     }
                 }
                 viewModel.resetLoginState()
@@ -173,3 +184,10 @@ fun LoginScreen(
         else -> Unit
     }
 }
+
+suspend fun getUidOnce(context: Context): String? {
+    return context.dataStore.data
+        .map { preferences -> preferences[PreferencedKey.uidIbu] }
+        .first()
+}
+

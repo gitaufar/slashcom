@@ -23,7 +23,7 @@ class DashboardRepositoryImpl(
 ) : DashboardRepository {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getMoodsFromAyah(context: Context, uid: String): Flow<List<Mood>> {
+    override fun getMoodsFromAyah(context: Context): Flow<List<Mood>> {
         return getUid(context).flatMapLatest { uidIbu ->
             if (uidIbu == null) {
                 flowOf(emptyList())
@@ -33,9 +33,8 @@ class DashboardRepositoryImpl(
         }
     }
 
-
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getLastMoodFromAyah(context: Context, uid: String): Flow<Mood?> {
+    override fun getLastMoodFromAyah(context: Context): Flow<Mood?> {
         return getUid(context).flatMapLatest { uidIbu ->
             uidIbu?.let { getLastMood(it) } ?: flowOf(null)
         }

@@ -141,7 +141,6 @@ fun RegisterScreen(
                         popUpTo("register") { inclusive = true }
                     }
                 }
-
                 else {
                     navController.navigate("verifikasi") {
                         popUpTo("register") { inclusive = true }
