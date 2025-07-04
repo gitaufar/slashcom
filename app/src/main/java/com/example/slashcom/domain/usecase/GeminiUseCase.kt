@@ -7,4 +7,8 @@ class GeminiUseCase(private val repository: GeminiRepository) {
     suspend fun getSaranGemini(emosi: String, tingkatStress: Int, isCrisis: Boolean): Pair<String, Boolean> {
         return repository.getGeminiReply(emosi, tingkatStress, isCrisis)
     }
+
+    suspend fun getRandomSaran(): String {
+        return repository.getRandomSaran()
+    }
 }

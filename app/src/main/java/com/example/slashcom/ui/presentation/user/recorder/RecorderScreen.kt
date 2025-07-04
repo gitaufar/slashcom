@@ -183,6 +183,20 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
                         )
                     }
                 }
+                RecorderState.Finished -> BlueButtonFull(
+                    text = "Lihat Hasil",
+                    onClick = {
+                        viewModel.uploadAudio() { success ->
+                            if (success) {
+                                navController.navigate("hasil") {
+                                    popUpTo("recorder") { inclusive = true }
+                                }
+                            } else {
+                                Toast.makeText(context, "Upload gagal", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                )
             }
         }
     }

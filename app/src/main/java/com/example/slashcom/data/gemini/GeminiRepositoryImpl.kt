@@ -8,6 +8,11 @@ import com.example.slashcom.di.GeminiProvider
 import com.example.slashcom.domain.repository.GeminiRepository
 import com.example.slashcom.data.model.GeminiRequest
 import com.example.slashcom.data.model.GeminiResponse
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 class GeminiRepositoryImpl(private val context: Context) : GeminiRepository {
 
@@ -22,7 +27,7 @@ class GeminiRepositoryImpl(private val context: Context) : GeminiRepository {
         return try {
             val finalPrompt = buildString {
                 appendLine("Bayangkan Anda sedang membantu seorang ibu yang baru saja melahirkan. " + "Saat ini ia merasa $emosi secara emosional dengan tingkat stres $tingkatStress dari 10 " + if (isCrisis) "dan fase krisis." else ".")
-                appendLine("Tolong berikan satu langkah kecil dan realistis yang bisa langsung ia lakukan saat ini untuk menenangkan diri.")
+                appendLine("Tolong berikan 5 langkah kecil dan realistis yang bisa langsung ia lakukan saat ini untuk menenangkan diri.")
                 appendLine("Gunakan bahasa yang lembut dan penuh empati.")
                 appendLine("Jelaskan hanya langkah tersebut.")
                 appendLine("Tidak perlu menyapa atau memberi kalimat pembuka maupun penutup.")
@@ -54,6 +59,36 @@ class GeminiRepositoryImpl(private val context: Context) : GeminiRepository {
             Pair(replyText, true)
         } catch (e: Exception) {
             Pair("Error: ${e.message}", false)
+        }
+    }
+
+    override suspend fun getRandomSaran(): String {
+        return suspendCancellableCoroutine { cont ->
+            val uid = UserData.uid
+            val saranRef = database.child("ibu").child(uid).child("saran")
+
+            saranRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val list = mutableListOf<String>()
+                    for (child in snapshot.children) {
+                        val value = child.getValue(String::class.java)
+                        if (!value.isNullOrBlank()) {
+                            list.add(value)
+                        }
+                    }
+
+                    if (list.isNotEmpty()) {
+                        val random = list.random()
+                        cont.resume(random)
+                    } else {
+                        cont.resume("Belum ada saran yang tersedia.")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    cont.resume("Gagal mengambil data: ${error.message}")
+                }
+            })
         }
     }
 }

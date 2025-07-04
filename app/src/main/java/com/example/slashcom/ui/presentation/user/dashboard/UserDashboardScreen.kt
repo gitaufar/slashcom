@@ -1,8 +1,11 @@
 package com.example.slashcom.ui.presentation.user.dashboard
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,12 +39,14 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
     val geminiViewModel: GeminiViewModel = viewModel(
         factory = GeminiViewModelFactory(context)
     )
-    val saran by geminiViewModel.saran.collectAsState()
+    val randomSaran by geminiViewModel.randomSaran.collectAsState()
     val loading by geminiViewModel.loading.collectAsState()
+
+    val scrollstate = rememberScrollState()
 
     LaunchedEffect(UserData.lastMood) {
         viewModel.loadLastMood(uid)
-        geminiViewModel.ambilSaran()
+        geminiViewModel.getRandomSaran()
     }
     Scaffold(
         containerColor = Color(0xFFD1E8FF),
@@ -56,6 +61,7 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .verticalScroll(scrollstate)
         ) {
             Box(
                 modifier = Modifier
@@ -106,7 +112,7 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
 
                 SaranCard(
                     title = "Saran Buat Ibu",
-                    description = saran,
+                    description = randomSaran,
                     loading = loading
                 )
 
