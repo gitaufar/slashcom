@@ -35,6 +35,8 @@ class ProfilViewModel(
                 .map { preferences -> preferences[PreferencedKey.uidIbu] }
                 .firstOrNull()
 
+            Log.d("partner", uidIbu.toString())
+
             if (uidIbu != null) {
                 repository.getIbu(uidIbu).collect { result ->
                     _listPendamping.value = result

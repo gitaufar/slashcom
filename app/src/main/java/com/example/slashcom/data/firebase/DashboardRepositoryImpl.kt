@@ -126,7 +126,7 @@ class DashboardRepositoryImpl(
     }
 
     fun getIbu(uidIbu: String): Flow<List<String>> = callbackFlow {
-        if (UserData.listPendamping.isNotEmpty()) {
+        if (UserData.listPendamping.contains(uidIbu)) {
             trySend(UserData.listPendamping).isSuccess
             close()
             return@callbackFlow
