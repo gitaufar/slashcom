@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -89,10 +90,10 @@ fun HasilAnalisisScreen(
             Spacer(modifier = Modifier.width(30.dp))
         }
 
-        Divider(
-            color = Color(0xFFCCCCCC),
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
             thickness = 0.5.dp,
-            modifier = Modifier.fillMaxWidth()
+            color = Color(0xFFCCCCCC)
         )
 
         LazyColumn(
