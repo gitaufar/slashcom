@@ -14,10 +14,14 @@ class GeminiRepositoryImpl(private val context: Context) : GeminiRepository {
     private val database = FirebaseProvider.database
     private val geminiKey = BuildConfig.GEMINI_API_KEY
 
-    override suspend fun getGeminiReply(prompt: String): Pair<String, Boolean> {
+    override suspend fun getGeminiReply(
+        emosi: String,
+        tingkatStress: Int,
+        isCrisis: Boolean
+    ): Pair<String, Boolean> {
         return try {
             val finalPrompt = buildString {
-                appendLine("Bayangkan Anda sedang membantu seorang ibu yang baru saja melahirkan. Saat ini ia merasa lelah secara emosional dengan tingkat stres 3 dari 10 dan fase krisis .")
+                appendLine("Bayangkan Anda sedang membantu seorang ibu yang baru saja melahirkan. " + "Saat ini ia merasa $emosi secara emosional dengan tingkat stres $tingkatStress dari 10 " + if (isCrisis) "dan fase krisis." else ".")
                 appendLine("Tolong berikan satu langkah kecil dan realistis yang bisa langsung ia lakukan saat ini untuk menenangkan diri.")
                 appendLine("Gunakan bahasa yang lembut dan penuh empati.")
                 appendLine("Jelaskan hanya langkah tersebut.")

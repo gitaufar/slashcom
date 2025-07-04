@@ -12,15 +12,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
 import com.example.slashcom.cache.UserData
 import com.example.slashcom.ui.presentation.component.*
+import com.example.slashcom.ui.presentation.user.recorder.GeminiViewModel
+import com.example.slashcom.ui.presentation.user.recorder.GeminiViewModelFactory
 
 //@Preview
 @Composable
@@ -28,11 +32,17 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
 
     val lastMood by viewModel.lastMood.collectAsState()
     val uid = UserData.uid
+    val context = LocalContext.current
+    val geminiViewModel: GeminiViewModel = viewModel(
+        factory = GeminiViewModelFactory(context)
+    )
+    val saran by geminiViewModel.saran.collectAsState()
+    val loading by geminiViewModel.loading.collectAsState()
 
     LaunchedEffect(UserData.lastMood) {
         viewModel.loadLastMood(uid)
+        geminiViewModel.ambilSaran()
     }
-
     Scaffold(
         containerColor = Color(0xFFD1E8FF),
         bottomBar = {
@@ -96,7 +106,8 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
 
                 SaranCard(
                     title = "Saran Buat Ibu",
-                    description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+                    description = saran,
+                    loading = loading
                 )
 
                 CheckSuaraCard(onClick = {

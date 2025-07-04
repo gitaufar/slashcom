@@ -1,5 +1,6 @@
 package com.example.slashcom.ui.presentation.user.recorder
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,10 +9,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -28,10 +33,19 @@ import com.example.slashcom.ui.presentation.component.*
 @Composable
 fun HasilAnalisisScreen(
     viewModel: RecorderViewModel = viewModel(),
-    navController: NavController
+    navController: NavController,
 ) {
 
+    val context = LocalContext.current
+    val geminiViewModel: GeminiViewModel = viewModel(
+        factory = GeminiViewModelFactory(context)
+    )
+    val saran by geminiViewModel.saran.collectAsState()
+    val loading by geminiViewModel.loading.collectAsState()
     val isKrisis = viewModel.isKrisis.value
+    LaunchedEffect(Unit) {
+        geminiViewModel.ambilSaran()
+    }
 
     Column(
         modifier = Modifier
@@ -72,7 +86,7 @@ fun HasilAnalisisScreen(
                     textAlign = TextAlign.Center
                 )
             )
-            Spacer(modifier = Modifier.width(30.dp)) // Placeholder agar teks tetap di tengah
+            Spacer(modifier = Modifier.width(30.dp))
         }
 
         Divider(
@@ -81,7 +95,6 @@ fun HasilAnalisisScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Konten pakai LazyColumn
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -119,7 +132,8 @@ fun HasilAnalisisScreen(
             item {
                 SaranCard(
                     title = "Saran Buat Ibu",
-                    description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+                    description = saran,
+                    loading = loading
                 )
             }
 

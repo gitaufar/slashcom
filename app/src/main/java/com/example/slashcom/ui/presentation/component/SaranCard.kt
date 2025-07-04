@@ -3,6 +3,7 @@ package com.example.slashcom.ui.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +23,8 @@ import com.example.slashcom.R
 fun SaranCard(
     title: String,
     description: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    loading: Boolean = true
 ) {
     Box(
         modifier = modifier
@@ -54,15 +56,20 @@ fun SaranCard(
                     textAlign = TextAlign.Center
                 )
             )
-            Text(
-                text = description,
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    lineHeight = 28.sp,
-                    fontFamily = FontFamily(Font(R.font.poppins_regular)),
-                    color = Color(0xFF7F7F7F),
+            if(!loading){
+                Text(
+                    text = description,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        lineHeight = 28.sp,
+                        fontFamily = FontFamily(Font(R.font.poppins_regular)),
+                        color = Color(0xFF7F7F7F),
+                    )
                 )
-            )
+            } else {
+                CircularProgressIndicator()
+            }
+
         }
     }
 }

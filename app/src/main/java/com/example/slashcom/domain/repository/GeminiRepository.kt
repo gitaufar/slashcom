@@ -1,5 +1,5 @@
 package com.example.slashcom.domain.repository
 
 interface GeminiRepository {
-    suspend fun getGeminiReply(prompt: String): Pair<String, Boolean>
+    suspend fun getGeminiReply(emosi: String, tingkatStress: Int, isCrisis: Boolean): Pair<String, Boolean>
 }
