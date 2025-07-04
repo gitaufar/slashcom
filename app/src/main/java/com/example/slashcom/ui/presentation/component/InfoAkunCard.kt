@@ -82,7 +82,7 @@ private fun InfoItem(label: String, value: String) {
             style = TextStyle(
                 fontSize = 14.sp,
                 lineHeight = 28.sp,
-                fontFamily = FontFamily(Font(R.font.poppins_medium)),
+                fontFamily = FontFamily(Font(R.font.poppins_regular)),
                 color = Color(0xFF7F7F7F)
             )
         )
@@ -91,7 +91,7 @@ private fun InfoItem(label: String, value: String) {
             style = TextStyle(
                 fontSize = 14.sp,
                 lineHeight = 28.sp,
-                fontFamily = FontFamily(Font(R.font.poppins_medium)),
+                fontFamily = FontFamily(Font(R.font.poppins_regular)),
                 color = Color(0xFF7F7F7F)
             )
         )
