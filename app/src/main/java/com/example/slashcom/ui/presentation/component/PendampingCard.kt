@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.slashcom.R
+import com.example.slashcom.cache.UserData
 
 @Composable
 fun PendampingCard(
@@ -42,7 +43,8 @@ fun PendampingCard(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Pendamping",
+            modifier = Modifier.fillMaxWidth(),
+            text = if(UserData.isIbu) "Pendamping" else "Ibu",
             style = TextStyle(
                 fontSize = 16.sp,
                 lineHeight = 28.sp,

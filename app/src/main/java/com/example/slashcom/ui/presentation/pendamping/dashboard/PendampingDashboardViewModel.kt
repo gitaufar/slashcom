@@ -35,12 +35,4 @@ class PendampingDashboardViewModel(
                 .collect { listMood -> _listMood.value = listMood }
         }
     }
-
-    fun loadCrisisMood(context: Context){
-        viewModelScope.launch {
-            repository.getMoodsFromAyah(context)
-                .catch { e -> e.printStackTrace() }
-                .collect { listMood -> _listMood.value = listMood }
-        }
-    }
 }

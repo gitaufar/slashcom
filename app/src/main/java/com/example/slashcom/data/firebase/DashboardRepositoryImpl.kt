@@ -2,6 +2,7 @@ package com.example.slashcom.data.repository
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.animation.core.snap
 import com.example.slashcom.cache.PreferencedKey
 import com.example.slashcom.cache.UserData
 import com.example.slashcom.cache.dataStore
@@ -123,6 +124,36 @@ class DashboardRepositoryImpl(
                 })
         }
     }
+
+    fun getIbu(uidIbu: String): Flow<List<String>> = callbackFlow {
+        if (UserData.listPendamping.isNotEmpty()) {
+            trySend(UserData.listPendamping).isSuccess
+            close()
+            return@callbackFlow
+        }
+
+        val ref = FirebaseProvider.database.child("user").child(uidIbu).child("username")
+
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val nama = snapshot.getValue(String::class.java)
+                if (nama != null) {
+                    UserData.listPendamping = listOf(nama)
+                    trySend(UserData.listPendamping).isSuccess
+                } else {
+                    trySend(emptyList()).isSuccess
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                close(error.toException())
+            }
+        }
+
+        ref.addValueEventListener(listener)
+        awaitClose { ref.removeEventListener(listener) }
+    }
+
 
 
     override fun getMoods(uid: String): Flow<List<Mood>> = callbackFlow {

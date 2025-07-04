@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -34,9 +35,10 @@ fun ProfilScreen(
     viewModel: ProfilViewModel = remember { ProfilViewModel() }
 ) {
     val listPendamping by viewModel.listPendamping.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.loadPendamping(UserData.uid)
+        if (UserData.isIbu) viewModel.loadPendamping(UserData.uid) else viewModel.loadIbu(context)
     }
 
     val fullName = UserData.userName
