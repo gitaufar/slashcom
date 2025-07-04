@@ -162,7 +162,9 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
                     onClick = {
                         viewModel.uploadAudio() { success ->
                             if (success) {
-                                navController.navigate("hasil")
+                                navController.navigate("hasil") {
+                                    popUpTo("recorder") { inclusive = true }
+                                }
                             } else {
                                 Toast.makeText(context, "Upload gagal", Toast.LENGTH_SHORT).show()
                             }

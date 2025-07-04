@@ -7,6 +7,7 @@ import com.example.slashcom.data.gemini.GeminiRepositoryImpl
 import com.example.slashcom.domain.usecase.GeminiUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class GeminiViewModel(context: Context) : ViewModel() {
@@ -16,6 +17,9 @@ class GeminiViewModel(context: Context) : ViewModel() {
     private val _saran = MutableStateFlow<String>("")
     val saran: StateFlow<String> = _saran
 
+    private val _randomSaran = MutableStateFlow<String>("")
+    val randomSaran = _randomSaran.asStateFlow()
+
     private val _loading = MutableStateFlow(true)
     val loading: StateFlow<Boolean> = _loading
 
@@ -24,6 +28,15 @@ class GeminiViewModel(context: Context) : ViewModel() {
             _loading.value = true
             val (hasil, sukses) = geminiUseCase.getSaranGemini(emosi,tingkatStress, isCrisis)
             _saran.value = hasil
+            _loading.value = false
+        }
+    }
+
+    fun getRandomSaran() {
+        viewModelScope.launch {
+            _loading.value = true
+            val result = geminiUseCase.getRandomSaran()
+            _randomSaran.value = result
             _loading.value = false
         }
     }
