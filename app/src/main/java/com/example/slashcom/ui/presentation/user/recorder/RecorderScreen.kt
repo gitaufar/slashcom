@@ -43,6 +43,7 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
     val context = LocalContext.current
     var recorderState by remember { mutableStateOf(RecorderState.Idle) }
     val questions = remember { ListQuestion.getRandomQuestions(5) }
+    var isUploading by remember { mutableStateOf(false) }
 
     var isPermissionGranted by remember {
         mutableStateOf(
@@ -157,6 +158,31 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
             when (recorderState) {
                 RecorderState.Idle -> RecorderText(text = "Tekan untuk mulai merekam")
                 RecorderState.Recording -> RecorderText(text = "Tekan untuk Berhenti")
+                RecorderState.Finished -> {
+                    if (isUploading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(40.dp),
+                            color = Color(0xFF3B82F6),
+                            strokeWidth = 4.dp
+                        )
+                    } else {
+                        BlueButtonFull(
+                            text = "Lihat Hasil",
+                            onClick = {
+                                isUploading = true
+                                viewModel.uploadAudio { success ->
+                                    isUploading = false
+                                    if (success) {
+                                        navController.navigate("hasil")
+                                    } else {
+                                        Toast.makeText(context, "Upload gagal", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
                 RecorderState.Finished -> BlueButtonFull(
                     text = "Lihat Hasil",
                     onClick = {

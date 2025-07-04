@@ -128,7 +128,7 @@ fun RiwayatScreen(
 
                     Text(
                         text = "Timeline Emosi", style = TextStyle(
-                            fontSize = 16.sp,
+                            fontSize = 18.sp,
                             lineHeight = 28.sp,
                             fontFamily = FontFamily(Font(R.font.poppins_semibold)),
                             color = Color(0xFF121212),

@@ -1,7 +1,9 @@
 package com.example.slashcom.ui.presentation.pendamping.dashboard
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -37,6 +40,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+@SuppressLint("UseOfNonLambdaOffsetOverload")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PendampingDashboardScreen(
@@ -46,8 +50,13 @@ fun PendampingDashboardScreen(
     val lastMood by viewModel.lastMood.collectAsState()
     val listMood by viewModel.listMood.collectAsState()
     val context = LocalContext.current
-    var activeTab by remember { mutableStateOf("riwayatEmosi") }
+    var activeTab by remember { mutableStateOf("daruratTerkini") }
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    var tabWidth by remember { mutableStateOf(0.dp) }
+
+    val indicatorOffset by animateDpAsState(
+        targetValue = if (activeTab == "daruratTerkini") 0.dp else tabWidth, label = ""
+    )
 
     LaunchedEffect(UserData.lastMood) {
         viewModel.loadLastMood(context)
@@ -80,7 +89,7 @@ fun PendampingDashboardScreen(
                     )
                 )
                 Text(
-                    text = "Ayo pantau bagaimana perkembangan emosional sang ibu❤️",
+                    text = "Ayo pantau bagaimana perkembangan emosional sang ibu",
                     style = TextStyle(
                         fontSize = 14.sp,
                         lineHeight = 28.sp,
@@ -126,39 +135,76 @@ fun PendampingDashboardScreen(
                 }
 
                 // Tab antara Darurat Terkini dan Riwayat Emosi
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "Darurat Terkini",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontFamily = FontFamily(Font(R.font.poppins_semibold)),
-                            color = Color.Black,
-                            textDecoration = if (activeTab == "daruratTerkini") TextDecoration.Underline else TextDecoration.None,
-                            textAlign = TextAlign.Center
-                        ),
-                        modifier = Modifier
-                            .clickable { activeTab = "daruratTerkini" }
-                            .weight(1f)
-                            .padding(end = 8.dp)
-                    )
+                Column {
+                    BoxWithConstraints {
+                        val totalWidth = maxWidth
+                        tabWidth = totalWidth / 2
 
-                    Text(
-                        text = "Riwayat Emosi",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontFamily = FontFamily(Font(R.font.poppins_semibold)),
-                            color = Color.Black,
-                            textDecoration = if (activeTab == "riwayatEmosi") TextDecoration.Underline else TextDecoration.None,
-                            textAlign = TextAlign.Center
-                        ),
-                        modifier = Modifier
-                            .clickable { activeTab = "riwayatEmosi" }
-                            .weight(1f)
-                            .padding(start = 8.dp)
-                    )
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(40.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { activeTab = "daruratTerkini" }
+                                        .fillMaxHeight(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Darurat Terkini",
+                                        style = TextStyle(
+                                            fontSize = 16.sp,
+                                            fontFamily = FontFamily(Font(R.font.poppins_semibold)),
+                                            color = if (activeTab == "daruratTerkini") Color(
+                                                0xFF0B1957
+                                            ) else Color(0xFF7F7F7F),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    )
+                                }
+
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { activeTab = "riwayatEmosi" }
+                                        .fillMaxHeight(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Riwayat Emosi",
+                                        style = TextStyle(
+                                            fontSize = 16.sp,
+                                            fontFamily = FontFamily(Font(R.font.poppins_semibold)),
+                                            color = if (activeTab == "riwayatEmosi") Color(
+                                                0xFF0B1957
+                                            ) else Color(0xFF7F7F7F),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    )
+                                }
+                            }
+
+                            // Garis background abu-abu dan indikator aktif
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(2.dp)
+                                    .background(Color(0xFFE5E7EB))
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .offset(x = indicatorOffset)
+                                        .width(tabWidth)
+                                        .height(2.dp)
+                                        .background(Color(0xFF0B1957))
+                                )
+                            }
+                        }
+                    }
                 }
 
                 // Konten tab aktif
