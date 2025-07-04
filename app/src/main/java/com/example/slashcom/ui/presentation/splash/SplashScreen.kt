@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
+import com.example.slashcom.di.FirebaseProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 
@@ -33,14 +34,28 @@ fun SplashScreen(
         delay(700L)
         alpha.animateTo(0f, animationSpec = tween(300))
 
-        val isOnboardingShown = viewModel.isOnboardingShown(context).first()
-        if (isOnboardingShown) {
-            navController.navigate("login") {
-                popUpTo("splash") { inclusive = true }
+        val currentUser = FirebaseProvider.auth.currentUser
+        if (currentUser != null) {
+            val isIbu = viewModel.checkUserIsIbu(currentUser.uid)
+            if(isIbu) {
+                navController.navigate("userDashboard") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            } else {
+                navController.navigate("pendampingDashboard") {
+                    popUpTo("splash") { inclusive = true }
+                }
             }
         } else {
-            navController.navigate("onboard") {
-                popUpTo("splash") { inclusive = true }
+            val isOnboardingShown = viewModel.isOnboardingShown(context).first()
+            if (isOnboardingShown) {
+                navController.navigate("login") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            } else {
+                navController.navigate("onboard") {
+                    popUpTo("splash") { inclusive = true }
+                }
             }
         }
     }
