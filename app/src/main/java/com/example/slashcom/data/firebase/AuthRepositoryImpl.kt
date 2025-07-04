@@ -1,8 +1,10 @@
 package com.example.slashcom.data.firebase
 
 import android.util.Log
+import androidx.compose.animation.core.snap
 import com.example.slashcom.cache.UserData
 import com.example.slashcom.di.FirebaseProvider
+import com.example.slashcom.domain.model.IbuData
 import com.example.slashcom.domain.model.User
 import com.example.slashcom.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -79,8 +81,11 @@ class AuthRepositoryImpl(
                             UserData.uid = uid
                             UserData.isIbu = userData?.isIbu ?: false
                             UserData.email = userData?.email ?: ""
-                            if(UserData.isIbu){
-                                UserData.id = userData?.id ?: "ga ke ambil cik"
+                            database.child("ibu").child(UserData.uid).get().addOnSuccessListener { snapshot ->
+                                if(snapshot.exists()) {
+                                    val ibuData = snapshot.getValue(IbuData::class.java)
+                                    UserData.id = ibuData?.id ?: "kosong idnya"
+                                }
                             }
                             onResult(true, null)
                             Log.d("Firebase", "Data: $userData")
