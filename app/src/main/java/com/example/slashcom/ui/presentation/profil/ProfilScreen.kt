@@ -31,7 +31,7 @@ fun ProfilScreen(
 ) {
     // Ambil data dari cache
     val fullName = UserData.userName
-    val userId = UserData.uid
+    val userId = UserData.id
     val username = UserData.userName
     val email = UserData.email
 
@@ -143,7 +143,7 @@ fun ProfilScreen(
                             iconResId = R.drawable.ic_logout,
                             onClick = {
                                 UserData.userName = ""
-                                UserData.uid = ""
+                                UserData.id = ""
                                 UserData.email = ""
                                 UserData.isIbu = false
                                 UserData.lastMood = null

@@ -2,6 +2,7 @@ package com.example.slashcom.ui.presentation.user.recorder
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -159,43 +160,16 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
                 RecorderState.Finished -> BlueButtonFull(
                     text = "Lihat Hasil",
                     onClick = {
-//                        viewModel.playRecording(context)
-                        navController.navigate("hasil")
+                        viewModel.uploadAudio() { success ->
+                            if (success) {
+                                navController.navigate("hasil")
+                            } else {
+                                Toast.makeText(context, "Upload gagal", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 )
             }
         }
     }
 }
-
-
-//val amplitude by viewModel.amplitude
-//val animatedHeight by animateDpAsState(targetValue = (amplitude / 50).coerceIn(10, 200).dp)
-//
-//Spacer(modifier = Modifier.height(16.dp))
-//
-//Box(
-//modifier = Modifier
-//.fillMaxWidth()
-//.height(animatedHeight)
-//.background(MaterialTheme.colorScheme.primary, shape = MaterialTheme.shapes.medium)
-//)
-//
-//Button(onClick = { viewModel.startRecording(context) }, modifier = Modifier.fillMaxWidth()) {
-//    Text("Start Recording")
-//}
-//
-//Spacer(modifier = Modifier.height(8.dp))
-//
-//Button(onClick = { viewModel.stopRecording(context) }, modifier = Modifier.fillMaxWidth()) {
-//    Text("Stop Recording")
-//}
-//
-//Spacer(modifier = Modifier.height(8.dp))
-//
-//Button(onClick = {
-//    val file = viewModel.getSavedAudioFile()
-//    Toast.makeText(context,file?.absolutePath ?: "belum ada file", Toast.LENGTH_LONG).show()
-//}, modifier = Modifier.fillMaxWidth()) {
-//    Text("Upload Audio")
-//}

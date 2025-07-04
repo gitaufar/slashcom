@@ -32,7 +32,7 @@ fun SaranCard(
                 clip = false
             )
             .width(372.dp)
-            .height(119.dp)
+            .height(199.dp)
             .background(
                 color = Color.White,
                 shape = RoundedCornerShape(size = 15.dp)
