@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,13 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.slashcom.data.gemini.GeminiRepositoryImpl
 import com.example.slashcom.ui.presentation.auth.LoginScreen
 import com.example.slashcom.ui.presentation.auth.PilihRole
 import com.example.slashcom.ui.presentation.auth.RegisterScreen
@@ -43,7 +40,6 @@ import com.example.slashcom.ui.presentation.user.riwayat.RiwayatScreen
 import com.example.slashcom.ui.presentation.splash.SplashScreen
 import com.example.slashcom.ui.presentation.user.recorder.HasilAnalisisScreen
 import com.example.slashcom.ui.theme.SlashcomTheme
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
