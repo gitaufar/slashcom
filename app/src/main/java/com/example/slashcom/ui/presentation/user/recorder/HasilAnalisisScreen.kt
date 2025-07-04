@@ -1,32 +1,53 @@
 package com.example.slashcom.ui.presentation.user.recorder
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.slashcom.R
 import com.example.slashcom.ui.presentation.component.*
 
 @Composable
-fun HasilAnalisisScreen(navController: NavController) {
+fun HasilAnalisisScreen(
+    viewModel: RecorderViewModel = viewModel(),
+    navController: NavController,
+) {
+
+    val context = LocalContext.current
+    val geminiViewModel: GeminiViewModel = viewModel(
+        factory = GeminiViewModelFactory(context)
+    )
+    val saran by geminiViewModel.saran.collectAsState()
+    val loading by geminiViewModel.loading.collectAsState()
+    val isKrisis = viewModel.isKrisis.value
+    LaunchedEffect(Unit) {
+        geminiViewModel.ambilSaran()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,48 +87,63 @@ fun HasilAnalisisScreen(navController: NavController) {
                     textAlign = TextAlign.Center
                 )
             )
-            Spacer(modifier = Modifier.width(30.dp)) // Placeholder agar teks tetap di tengah
+            Spacer(modifier = Modifier.width(30.dp))
         }
 
-        Divider(
-            color = Color(0xFFCCCCCC),
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
             thickness = 0.5.dp,
-            modifier = Modifier.fillMaxWidth()
+            color = Color(0xFFCCCCCC)
         )
 
-        // Konten
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.Top),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(top = 24.dp, bottom = 24.dp)
         ) {
-            Spacer(modifier = Modifier.height(4.dp))
-            EmosiTerdeteksiCard(emosi = "Lelah")
-            TingkatStresCard(level = 6)
-            BantuanButton(
-                text = "Fase Kritis Terdeteksi",
-                iconResId = R.drawable.ic_alert
-            )
-            SaranCard(
-                title = "Saran Buat Ibu",
-                description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            )
+            item {
+                EmosiTerdeteksiCard(emosi = "Lelah")
+            }
 
-            BlueButtonFull(
-                text = "Selesai",
-                onClick = { navController.navigate("userDashboard") }
-            )
+            item {
+                TingkatStresCard(level = 6)
+            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            if (isKrisis == true) {
+                item {
+                    BantuanButton(
+                        text = "Fase Kritis Terdeteksi",
+                        iconResId = R.drawable.ic_alert,
+                        onClick = {}
+                    )
+                }
+            }
+
+            item {
+                BantuanButton(
+                    text = "Fase Krisis Terdeteksi",
+                    iconResId = R.drawable.ic_alert,
+                    onClick = {}
+                )
+            }
+
+            item {
+                SaranCard(
+                    title = "Saran Buat Ibu",
+                    description = saran,
+                    loading = loading
+                )
+            }
+
+            item {
+                BlueButtonFull(
+                    text = "Selesai",
+                    onClick = { navController.navigate("userDashboard") }
+                )
+            }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewHasilAnalisisScreen() {
-    val navController = rememberNavController()
-    HasilAnalisisScreen(navController)
 }

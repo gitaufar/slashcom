@@ -1,12 +1,12 @@
 package com.example.slashcom.ui.presentation.pendamping.dashboard
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -17,45 +17,51 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.slashcom.R
 import com.example.slashcom.cache.UserData
 import com.example.slashcom.ui.presentation.component.*
-import com.example.slashcom.ui.presentation.user.dashboard.DashboardViewModel
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
+@SuppressLint("UseOfNonLambdaOffsetOverload")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PendampingDashboardScreen(
     navController: NavController,
-    viewModel: DashboardViewModel = remember { DashboardViewModel() }
+    viewModel: PendampingDashboardViewModel = remember { PendampingDashboardViewModel() }
 ) {
     val lastMood by viewModel.lastMood.collectAsState()
-    val uid = UserData.uid
-    var activeTab by remember { mutableStateOf("riwayatEmosi") }
+    val listMood by viewModel.listMood.collectAsState()
+    val context = LocalContext.current
+    var activeTab by remember { mutableStateOf("daruratTerkini") }
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    var tabWidth by remember { mutableStateOf(0.dp) }
 
-    LaunchedEffect(uid) {
-        viewModel.loadLastMood(uid)
+    val indicatorOffset by animateDpAsState(
+        targetValue = if (activeTab == "daruratTerkini") 0.dp else tabWidth, label = ""
+    )
+
+    LaunchedEffect(UserData.lastMood) {
+        viewModel.loadLastMood(context)
+        viewModel.loadListMood(context)
     }
-
-    val riwayatEmosi = listOf(
-        RiwayatEmosiItem("Marah", LocalDate.of(2025, 7, 3), 6),
-        RiwayatEmosiItem("Cemas", LocalDate.of(2025, 7, 2), 4)
-    )
-
-    val riwayatDarurat = listOf(
-        RiwayatDaruratItem("Ibu butuh bantuan", LocalDate.of(2025, 7, 3), "22:38"),
-        RiwayatDaruratItem("Ibu merasa panik", LocalDate.of(2025, 7, 2), "21:15")
-    )
 
     Scaffold(
         containerColor = Color(0xFFD1E8FF),
@@ -83,7 +89,7 @@ fun PendampingDashboardScreen(
                     )
                 )
                 Text(
-                    text = "Ayo pantau bagaimana perkembangan emosional sang ibu❤️",
+                    text = "Ayo pantau bagaimana perkembangan emosional sang ibu",
                     style = TextStyle(
                         fontSize = 14.sp,
                         lineHeight = 28.sp,
@@ -129,58 +135,97 @@ fun PendampingDashboardScreen(
                 }
 
                 // Tab antara Darurat Terkini dan Riwayat Emosi
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "Darurat Terkini",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontFamily = FontFamily(Font(R.font.poppins_semibold)),
-                            color = Color.Black,
-                            textDecoration = if (activeTab == "daruratTerkini") TextDecoration.Underline else TextDecoration.None
-                        ),
-                        modifier = Modifier
-                            .clickable { activeTab = "daruratTerkini" }
-                            .weight(1f)
-                            .padding(end = 8.dp)
-                    )
+                Column {
+                    BoxWithConstraints {
+                        val totalWidth = maxWidth
+                        tabWidth = totalWidth / 2
 
-                    Text(
-                        text = "Riwayat Emosi",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontFamily = FontFamily(Font(R.font.poppins_semibold)),
-                            color = Color.Black,
-                            textDecoration = if (activeTab == "riwayatEmosi") TextDecoration.Underline else TextDecoration.None
-                        ),
-                        modifier = Modifier
-                            .clickable { activeTab = "riwayatEmosi" }
-                            .weight(1f)
-                            .padding(start = 8.dp)
-                    )
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(40.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { activeTab = "daruratTerkini" }
+                                        .fillMaxHeight(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Darurat Terkini",
+                                        style = TextStyle(
+                                            fontSize = 16.sp,
+                                            fontFamily = FontFamily(Font(R.font.poppins_semibold)),
+                                            color = if (activeTab == "daruratTerkini") Color(
+                                                0xFF0B1957
+                                            ) else Color(0xFF7F7F7F),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    )
+                                }
+
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { activeTab = "riwayatEmosi" }
+                                        .fillMaxHeight(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Riwayat Emosi",
+                                        style = TextStyle(
+                                            fontSize = 16.sp,
+                                            fontFamily = FontFamily(Font(R.font.poppins_semibold)),
+                                            color = if (activeTab == "riwayatEmosi") Color(
+                                                0xFF0B1957
+                                            ) else Color(0xFF7F7F7F),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    )
+                                }
+                            }
+
+                            // Garis background abu-abu dan indikator aktif
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(2.dp)
+                                    .background(Color(0xFFE5E7EB))
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .offset(x = indicatorOffset)
+                                        .width(tabWidth)
+                                        .height(2.dp)
+                                        .background(Color(0xFF0B1957))
+                                )
+                            }
+                        }
+                    }
                 }
 
                 // Konten tab aktif
                 if (activeTab == "riwayatEmosi") {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        riwayatEmosi.forEach { item ->
+                        listMood.reversed().forEach { item ->
                             RiwayatEmosiCard(
                                 emosi = item.emosi,
-                                tanggal = item.tanggal,
-                                tingkatStres = item.tingkatStres,
+                                tanggal = LocalDate.parse(item.date, formatter),
+                                tingkatStres = item.stress,
                                 onClick = { /* Handle click */ }
                             )
                         }
                     }
                 } else {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        riwayatDarurat.forEach { item ->
+                        listMood.filter { it.crisis }.forEach { item ->
                             RiwayatDaruratCard(
-                                judul = item.judul,
-                                tanggal = item.tanggal,
-                                waktu = item.waktu,
+                                judul = "Ibu merasa ${item.emosi}",
+                                tanggal = LocalDate.parse(item.date, formatter),
+                                waktu = LocalDateTime.parse(item.date, formatter),
                                 onClick = { /* Handle click */ }
                             )
                         }
@@ -190,7 +235,8 @@ fun PendampingDashboardScreen(
                 // Tombol Bantuan
                 BantuanButton(
                     text = "Bantuan Darurat",
-                    iconResId = R.drawable.ic_telephone
+                    iconResId = R.drawable.ic_telephone,
+                    onClick = {}
                 )
             }
         }
@@ -209,3 +255,11 @@ data class RiwayatDaruratItem(
     val tanggal: LocalDate,
     val waktu: String
 )
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun PendampingDashboardScreenPreview() {
+    val navController = rememberNavController()
+    PendampingDashboardScreen(navController = navController)
+}

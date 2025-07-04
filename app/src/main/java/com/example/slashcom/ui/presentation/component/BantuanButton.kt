@@ -2,6 +2,7 @@ package com.example.slashcom.ui.presentation.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -23,12 +24,15 @@ import com.example.slashcom.R
 fun BantuanButton(
     text: String,
     iconResId: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
+
 ) {
     Box(
         modifier = modifier
             .width(372.dp)
             .height(58.dp)
+            .clickable { onClick() }
             .background(color = Color(0xFFFEF2F2), shape = RoundedCornerShape(size = 15.dp))
             .padding(horizontal = 15.dp, vertical = 15.dp)
     ) {
@@ -60,6 +64,7 @@ fun BantuanButton(
 fun PreviewBantuanButton() {
     BantuanButton(
         text = "Bantuan Darurat",
-        iconResId = R.drawable.ic_telephone
+        iconResId = R.drawable.ic_telephone,
+        onClick = {}
     )
 }

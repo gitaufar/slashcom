@@ -71,7 +71,7 @@ fun QuestionCard(
                     .fillMaxWidth()
                     .background(
                         color = if (!isIdle) Color.White else Color.Transparent,
-                        shape = RoundedCornerShape(10)
+                        shape = RoundedCornerShape(30)
                     )
                     .padding(animatedPadding)
                     .wrapContentSize(),

@@ -2,6 +2,7 @@ package com.example.slashcom.ui.presentation.user.recorder
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -42,6 +43,7 @@ fun RecorderScreen(viewModel: RecorderViewModel = hiltViewModel(), navController
     val context = LocalContext.current
     var recorderState by remember { mutableStateOf(RecorderState.Idle) }
     val questions = remember { ListQuestion.getRandomQuestions(5) }
+    var isUploading by remember { mutableStateOf(false) }
 
     var isPermissionGranted by remember {
         mutableStateOf(
@@ -156,11 +158,43 @@ fun RecorderScreen(viewModel: RecorderViewModel = hiltViewModel(), navController
             when (recorderState) {
                 RecorderState.Idle -> RecorderText(text = "Tekan untuk mulai merekam")
                 RecorderState.Recording -> RecorderText(text = "Tekan untuk Berhenti")
+                RecorderState.Finished -> {
+                    if (isUploading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(40.dp),
+                            color = Color(0xFF3B82F6),
+                            strokeWidth = 4.dp
+                        )
+                    } else {
+                        BlueButtonFull(
+                            text = "Lihat Hasil",
+                            onClick = {
+                                isUploading = true
+                                viewModel.uploadAudio { success ->
+                                    isUploading = false
+                                    if (success) {
+                                        navController.navigate("hasil")
+                                    } else {
+                                        Toast.makeText(context, "Upload gagal", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
                 RecorderState.Finished -> BlueButtonFull(
                     text = "Lihat Hasil",
                     onClick = {
-//                        viewModel.playRecording(context)
-                        navController.navigate("hasil")
+                        viewModel.uploadAudio() { success ->
+                            if (success) {
+                                navController.navigate("hasil") {
+                                    popUpTo("recorder") { inclusive = true }
+                                }
+                            } else {
+                                Toast.makeText(context, "Upload gagal", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 )
             }

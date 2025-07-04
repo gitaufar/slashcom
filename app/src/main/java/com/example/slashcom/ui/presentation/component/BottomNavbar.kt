@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.slashcom.R
+import com.example.slashcom.cache.UserData
 
 @Composable
 fun BottomNavBar(
@@ -48,7 +49,7 @@ fun BottomNavBar(
             )
             .fillMaxWidth()
             .height(80.dp)
-            .background(color = Color.White,)
+            .background(color = Color.White)
             .padding(top = 5.dp, bottom = 20.dp, start = 20.dp, end = 20.dp)
     ) {
         Row(
@@ -60,14 +61,22 @@ fun BottomNavBar(
                 icon = R.drawable.ic_beranda,
                 label = "beranda",
                 isSelected = selected == "beranda",
-                onClick = { if (selected != "beranda") navController.navigate("userDashboard") }
+                onClick = {
+                    if (selected != "beranda") {
+                        if (UserData.isIbu) navController.navigate("userDashboard") else navController.navigate(
+                            "pendampingDashboard"
+                        )
+                    }
+                }
             )
-            NavItem(
-                icon = R.drawable.ic_riwayat,
-                label = "riwayat",
-                isSelected = selected == "riwayat",
-                onClick = { if (selected != "riwayat") navController.navigate("riwayat") }
-            )
+            if (UserData.isIbu) {
+                NavItem(
+                    icon = R.drawable.ic_riwayat,
+                    label = "riwayat",
+                    isSelected = selected == "riwayat",
+                    onClick = { if (selected != "riwayat") navController.navigate("riwayat") }
+                )
+            }
             NavItem(
                 icon = R.drawable.ic_profil,
                 label = "profil",

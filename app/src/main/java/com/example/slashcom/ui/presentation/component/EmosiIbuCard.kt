@@ -72,14 +72,17 @@ fun EmosiIbuCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Image(
-                    painter = painterResource(id = imageResId),
-                    contentDescription = emosi,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.size(30.dp)
-                )
+                if(emosi.isNotEmpty()){
+                    Image(
+                        painter = painterResource(id = imageResId),
+                        contentDescription = emosi,
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+
                 Text(
-                    text = emosi.replaceFirstChar { it.uppercase() },
+                    text = if(emosi.isNotEmpty()) emosi.replaceFirstChar { it.uppercase() } else "Belum ada data",
                     style = TextStyle(
                         fontSize = 16.sp,
                         lineHeight = 28.sp,

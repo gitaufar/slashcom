@@ -1,8 +1,11 @@
 package com.example.slashcom.ui.presentation.user.dashboard
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,15 +15,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
 import com.example.slashcom.cache.UserData
 import com.example.slashcom.ui.presentation.component.*
+import com.example.slashcom.ui.presentation.user.recorder.GeminiViewModel
+import com.example.slashcom.ui.presentation.user.recorder.GeminiViewModelFactory
 
 //@Preview
 @Composable
@@ -28,11 +35,19 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
 
     val lastMood by viewModel.lastMood.collectAsState()
     val uid = UserData.uid
+    val context = LocalContext.current
+    val geminiViewModel: GeminiViewModel = viewModel(
+        factory = GeminiViewModelFactory(context)
+    )
+    val randomSaran by geminiViewModel.randomSaran.collectAsState()
+    val loading by geminiViewModel.loading.collectAsState()
 
-    LaunchedEffect(uid) {
+    val scrollstate = rememberScrollState()
+
+    LaunchedEffect(UserData.lastMood) {
         viewModel.loadLastMood(uid)
+        geminiViewModel.getRandomSaran()
     }
-
     Scaffold(
         containerColor = Color(0xFFD1E8FF),
         bottomBar = {
@@ -46,6 +61,7 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .verticalScroll(scrollstate)
         ) {
             Box(
                 modifier = Modifier
@@ -90,13 +106,14 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    EmosiIbuCard(emosi = lastMood?.emosi ?: "normal", modifier = Modifier.weight(1f))
-                    LevelStressCard(level = lastMood?.stress ?: 3, modifier = Modifier.weight(1f))
+                    EmosiIbuCard(emosi = lastMood?.emosi ?: "", modifier = Modifier.weight(1f))
+                    LevelStressCard(level = lastMood?.stress ?: 0, modifier = Modifier.weight(1f))
                 }
 
                 SaranCard(
                     title = "Saran Buat Ibu",
-                    description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+                    description = randomSaran,
+                    loading = loading
                 )
 
                 CheckSuaraCard(onClick = {
@@ -105,7 +122,8 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
 
                 BantuanButton(
                     text = "Bantuan Darurat",
-                    iconResId = R.drawable.ic_telephone
+                    iconResId = R.drawable.ic_telephone,
+                    onClick = {}
                 )
             }
         }
