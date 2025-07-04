@@ -38,9 +38,11 @@ import com.example.slashcom.ui.presentation.pendamping.dashboard.PendampingDashb
 import com.example.slashcom.ui.presentation.user.recorder.RecorderScreen
 import com.example.slashcom.ui.presentation.user.riwayat.RiwayatScreen
 import com.example.slashcom.ui.presentation.splash.SplashScreen
-import com.example.slashcom.ui.presentation.user.result.HasilAnalisisScreen
+import com.example.slashcom.ui.presentation.user.recorder.HasilAnalisisScreen
 import com.example.slashcom.ui.theme.SlashcomTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {

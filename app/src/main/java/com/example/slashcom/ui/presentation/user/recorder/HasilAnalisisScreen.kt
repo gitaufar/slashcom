@@ -1,4 +1,4 @@
-package com.example.slashcom.ui.presentation.user.result
+package com.example.slashcom.ui.presentation.user.recorder
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

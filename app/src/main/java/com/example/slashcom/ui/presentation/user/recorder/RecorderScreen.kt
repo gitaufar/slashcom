@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
 import com.example.slashcom.cache.ListQuestion
@@ -32,13 +31,14 @@ import com.example.slashcom.ui.presentation.component.BlueButtonFull
 import com.example.slashcom.ui.presentation.component.QuestionCard
 import com.example.slashcom.ui.presentation.component.RecorderText
 import com.example.slashcom.ui.presentation.component.VoiceRecorder
+import androidx.hilt.navigation.compose.hiltViewModel
 
 enum class RecorderState {
     Idle, Recording, Finished
 }
 
 @Composable
-fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: NavController) {
+fun RecorderScreen(viewModel: RecorderViewModel = hiltViewModel(), navController: NavController) {
     val context = LocalContext.current
     var recorderState by remember { mutableStateOf(RecorderState.Idle) }
     val questions = remember { ListQuestion.getRandomQuestions(5) }
@@ -167,35 +167,3 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
         }
     }
 }
-
-
-//val amplitude by viewModel.amplitude
-//val animatedHeight by animateDpAsState(targetValue = (amplitude / 50).coerceIn(10, 200).dp)
-//
-//Spacer(modifier = Modifier.height(16.dp))
-//
-//Box(
-//modifier = Modifier
-//.fillMaxWidth()
-//.height(animatedHeight)
-//.background(MaterialTheme.colorScheme.primary, shape = MaterialTheme.shapes.medium)
-//)
-//
-//Button(onClick = { viewModel.startRecording(context) }, modifier = Modifier.fillMaxWidth()) {
-//    Text("Start Recording")
-//}
-//
-//Spacer(modifier = Modifier.height(8.dp))
-//
-//Button(onClick = { viewModel.stopRecording(context) }, modifier = Modifier.fillMaxWidth()) {
-//    Text("Stop Recording")
-//}
-//
-//Spacer(modifier = Modifier.height(8.dp))
-//
-//Button(onClick = {
-//    val file = viewModel.getSavedAudioFile()
-//    Toast.makeText(context,file?.absolutePath ?: "belum ada file", Toast.LENGTH_LONG).show()
-//}, modifier = Modifier.fillMaxWidth()) {
-//    Text("Upload Audio")
-//}
