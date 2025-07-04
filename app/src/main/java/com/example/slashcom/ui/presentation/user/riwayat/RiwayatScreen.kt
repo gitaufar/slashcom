@@ -51,39 +51,39 @@ fun RiwayatScreen(
     val moodList by viewModel.moodList.collectAsState()
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     val uid = UserData.uid
-    
+
     val lazyListState = rememberLazyListState()
-    
+
     val topBarHeightDp by remember {
         derivedStateOf {
             val offset = lazyListState.firstVisibleItemScrollOffset
             val collapseRange = 300f
-            
+
             val collapseFraction = (offset / collapseRange).coerceIn(0f, 1f)
-            val maxHeight = 88.dp
+            val maxHeight = 70.dp
             val minHeight = 0.dp
-            
+
             maxHeight - (maxHeight - minHeight) * collapseFraction
         }
     }
-    
+
     val cornerRadiusDp by remember {
         derivedStateOf {
             val offset = lazyListState.firstVisibleItemScrollOffset
             val collapseRange = 300f
-            
+
             val collapseFraction = (offset / collapseRange).coerceIn(0f, 1f)
             val maxRadius = 30.dp
             val minRadius = 0.dp
-            
+
             maxRadius - (maxRadius - minRadius) * collapseFraction
         }
     }
-    
+
     LaunchedEffect(uid) {
         viewModel.loadMoods(uid)
     }
-    
+
     Scaffold(
         containerColor = Color(0xFFD1E8FF),
         topBar = {
@@ -91,8 +91,8 @@ fun RiwayatScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .statusBarsPadding()
-                    .height(topBarHeightDp)
-                    .padding(top = 24.dp), contentAlignment = Alignment.Center
+                    .height(topBarHeightDp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Riwayat", style = TextStyle(
@@ -104,8 +104,7 @@ fun RiwayatScreen(
                     )
                 )
             }
-            
-            Spacer(modifier = Modifier.height(20.dp))
+
         }, bottomBar = {
             BottomNavBar(
                 navController = navController, selected = "riwayat"
@@ -126,7 +125,7 @@ fun RiwayatScreen(
             ) {
                 item {
                     Spacer(modifier = Modifier.height(20.dp))
-                    
+
                     Text(
                         text = "Timeline Emosi", style = TextStyle(
                             fontSize = 16.sp,
@@ -135,17 +134,39 @@ fun RiwayatScreen(
                             color = Color(0xFF121212),
                         )
                     )
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
                 }
-                
-                items(moodList.reversed()) { item ->
-                    RiwayatEmosiCard(
-                        emosi = item.emosi,
-                        tanggal = LocalDate.parse(item.date, formatter),
-                        tingkatStres = item.stress,
-                        onClick = { })
-                    Spacer(modifier = Modifier.height(20.dp))
+
+                if (moodList.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 40.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Belum ada data riwayat",
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.poppins_regular)),
+                                    color = Color(0xFF7F7F7F),
+                                    textAlign = TextAlign.Center
+                                )
+                            )
+                        }
+                    }
+                } else {
+                    items(moodList.reversed()) { item ->
+                        RiwayatEmosiCard(
+                            emosi = item.emosi,
+                            tanggal = LocalDate.parse(item.date, formatter),
+                            tingkatStres = item.stress,
+                            onClick = { }
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
                 }
             }
         }

@@ -54,7 +54,6 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         navController = navController,
                         startDestination = "splash",
-//                        startDestination = "dashboard",
                     ) {
                         composable("splash") { SplashScreen(navController) }
                         composable("onboard") { Onboarding1(navController) }
