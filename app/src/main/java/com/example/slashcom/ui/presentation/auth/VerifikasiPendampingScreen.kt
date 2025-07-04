@@ -55,7 +55,8 @@ fun VerifikasiPendampingScreen(
         Spacer(modifier = Modifier.height(80.dp))
 
         Text(
-            text = "Verifikasi Pendamping", style = TextStyle(
+            text = "Hubungkan Pendamping",
+            style = TextStyle(
                 fontSize = 24.sp,
                 fontFamily = FontFamily(Font(R.font.poppins_bold)),
                 fontWeight = FontWeight(700),
@@ -99,14 +100,20 @@ fun VerifikasiPendampingScreen(
         when (verifikasiState) {
             is State.Success -> {
                 navController.navigate("pendampingDashboard") {
-                    popUpTo("verifikasi") { inclusive = true }
+                    popUpTo("Konfirmasi") { inclusive = true }
                 }
-                Toast.makeText(context, "Berhasil menghubungkan dengan si ibu😁💕", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Berhasil menghubungkan dengan sang ibu💕",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+
             is State.Error -> {
                 val message = (verifikasiState as State.Error).message
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
+
             else -> Unit
         }
         Spacer(modifier = Modifier.height(32.dp))

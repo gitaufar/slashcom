@@ -49,7 +49,7 @@ fun BottomNavBar(
             )
             .fillMaxWidth()
             .height(80.dp)
-            .background(color = Color.White,)
+            .background(color = Color.White)
             .padding(top = 5.dp, bottom = 20.dp, start = 20.dp, end = 20.dp)
     ) {
         Row(
@@ -61,12 +61,15 @@ fun BottomNavBar(
                 icon = R.drawable.ic_beranda,
                 label = "beranda",
                 isSelected = selected == "beranda",
-                onClick = { if (selected != "beranda") {
-                    if (UserData.isIbu) navController.navigate("userDashboard") else navController.navigate("pendampingDashboard")
+                onClick = {
+                    if (selected != "beranda") {
+                        if (UserData.isIbu) navController.navigate("userDashboard") else navController.navigate(
+                            "pendampingDashboard"
+                        )
                     }
                 }
             )
-            if(UserData.isIbu){
+            if (UserData.isIbu) {
                 NavItem(
                     icon = R.drawable.ic_riwayat,
                     label = "riwayat",
