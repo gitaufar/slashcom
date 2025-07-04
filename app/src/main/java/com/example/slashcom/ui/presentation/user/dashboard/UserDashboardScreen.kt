@@ -106,8 +106,8 @@ fun UserDashboardScreen(navController: NavController, viewModel: DashboardViewMo
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    EmosiIbuCard(emosi = lastMood?.emosi ?: "normal", modifier = Modifier.weight(1f))
-                    LevelStressCard(level = lastMood?.stress ?: 3, modifier = Modifier.weight(1f))
+                    EmosiIbuCard(emosi = lastMood?.emosi ?: "", modifier = Modifier.weight(1f))
+                    LevelStressCard(level = lastMood?.stress ?: 0, modifier = Modifier.weight(1f))
                 }
 
                 SaranCard(
