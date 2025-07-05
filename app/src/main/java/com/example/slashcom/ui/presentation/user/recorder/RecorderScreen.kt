@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
 import com.example.slashcom.cache.ListQuestion
@@ -33,18 +32,18 @@ import com.example.slashcom.ui.presentation.component.BlueButtonFull
 import com.example.slashcom.ui.presentation.component.QuestionCard
 import com.example.slashcom.ui.presentation.component.RecorderText
 import com.example.slashcom.ui.presentation.component.VoiceRecorder
+import androidx.hilt.navigation.compose.hiltViewModel
 
 enum class RecorderState {
     Idle, Recording, Finished
 }
 
 @Composable
-fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: NavController) {
+fun RecorderScreen(viewModel: RecorderViewModel = hiltViewModel(), navController: NavController) {
     val context = LocalContext.current
     var recorderState by remember { mutableStateOf(RecorderState.Idle) }
     val questions = remember { ListQuestion.getRandomQuestions(5) }
     var isUploading by remember { mutableStateOf(false) }
-
     var isPermissionGranted by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -183,20 +182,6 @@ fun RecorderScreen(viewModel: RecorderViewModel = viewModel(), navController: Na
                         )
                     }
                 }
-                RecorderState.Finished -> BlueButtonFull(
-                    text = "Lihat Hasil",
-                    onClick = {
-                        viewModel.uploadAudio() { success ->
-                            if (success) {
-                                navController.navigate("hasil") {
-                                    popUpTo("recorder") { inclusive = true }
-                                }
-                            } else {
-                                Toast.makeText(context, "Upload gagal", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                )
             }
         }
     }

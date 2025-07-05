@@ -41,7 +41,9 @@ import com.example.slashcom.ui.presentation.splash.SplashScreen
 import com.example.slashcom.ui.presentation.user.recorder.HasilAnalisisScreen
 import com.example.slashcom.ui.presentation.user.recorder.RecorderViewModel
 import com.example.slashcom.ui.theme.SlashcomTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {

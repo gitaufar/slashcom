@@ -1,12 +1,10 @@
 package com.example.slashcom.ui.presentation.user.recorder
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.slashcom.R
@@ -33,7 +32,7 @@ import com.example.slashcom.ui.presentation.component.*
 
 @Composable
 fun HasilAnalisisScreen(
-    viewModel: RecorderViewModel = viewModel(),
+    viewModel: RecorderViewModel = hiltViewModel(),
     navController: NavController,
 ) {
 
@@ -45,7 +44,7 @@ fun HasilAnalisisScreen(
     val loading by geminiViewModel.loading.collectAsState()
     val isKrisis = viewModel.isKrisis.value
     LaunchedEffect(Unit) {
-        geminiViewModel.ambilSaran()
+        geminiViewModel.ambilSaran(isCrisis = isKrisis ?: false)
     }
 
     Column(
