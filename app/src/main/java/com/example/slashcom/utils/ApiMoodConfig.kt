@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 interface ApiMoodConfig {
     companion object {
-        val BASE_URL = "http://192.168.1.4:8000/"
+        val BASE_URL = "http://192.168.56.1:8080/"
     }
     
     fun getApiService(): ApiService {

@@ -52,7 +52,6 @@ class RecorderViewModel @Inject constructor(
             "Recording started, saved at: ${outputFile.absolutePath}",
             Toast.LENGTH_SHORT
         ).show()
-
     }
 
     fun stopRecording(context: Context) {
@@ -82,7 +81,7 @@ class RecorderViewModel @Inject constructor(
         viewModelScope.launch {
             val result = moodUseCase(outputFile)
             _moodResponse.value = result
-
+            Toast.makeText(context, "emosi: ${_moodResponse.value?.predicted_emotion} dan stress: ${_moodResponse.value?.predicted_stress_level} ",Toast.LENGTH_LONG).show()
             outputFile.delete()
         }
     }
