@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 object MoodProvider {
     
-    private val BASE_URL = "http://192.168.1.4:8000/"
+    private val BASE_URL = "https://web-production-eeedc.up.railway.app/"
     
     @Provides
     fun provideApiService(): ApiService {

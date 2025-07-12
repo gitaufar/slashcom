@@ -44,6 +44,7 @@ fun RecorderScreen(viewModel: RecorderViewModel = hiltViewModel(), navController
     var recorderState by remember { mutableStateOf(RecorderState.Idle) }
     val questions = remember { ListQuestion.getRandomQuestions(5) }
     var isUploading by remember { mutableStateOf(false) }
+
     var isPermissionGranted by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
