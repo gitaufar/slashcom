@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val recorderViewModel: RecorderViewModel = hiltViewModel()
             val navController = rememberNavController()
             SlashcomTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -87,12 +89,14 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("recorder") {
                             RecorderScreen(
-                                navController = navController
+                                navController = navController,
+                                viewModel = recorderViewModel
                             )
                         }
                         composable("hasil") {
                             HasilAnalisisScreen(
-                                navController = navController
+                                navController = navController,
+                                viewModel = recorderViewModel
                             )
                         }
                         composable("pendampingDashboard") { PendampingDashboardScreen(navController) }

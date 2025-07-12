@@ -42,9 +42,10 @@ fun HasilAnalisisScreen(
     )
     val saran by geminiViewModel.saran.collectAsState()
     val loading by geminiViewModel.loading.collectAsState()
+    val mood by viewModel.moodResponse.collectAsState()
     val isKrisis = viewModel.isKrisis.value
     LaunchedEffect(Unit) {
-        geminiViewModel.ambilSaran(isCrisis = isKrisis ?: false)
+        geminiViewModel.ambilSaran(isCrisis = isKrisis ?: false, emosi = mood!!.predicted_emotion, tingkatStress = mood!!.predicted_stress_level.toInt())
     }
 
     Column(
@@ -104,11 +105,11 @@ fun HasilAnalisisScreen(
             contentPadding = PaddingValues(top = 24.dp, bottom = 24.dp)
         ) {
             item {
-                EmosiTerdeteksiCard(emosi = "Lelah")
+                EmosiTerdeteksiCard(emosi = mood?.predicted_emotion ?: "Marah")
             }
 
             item {
-                TingkatStresCard(level = 6)
+                TingkatStresCard(level = mood?.predicted_stress_level?.toInt() ?: 1)
             }
 
             if (isKrisis == true) {

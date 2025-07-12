@@ -212,6 +212,7 @@ class DashboardRepositoryImpl(
         ref.get().addOnSuccessListener { snapshot ->
             val nextId = (snapshot.children.count() + 1).toString()
             ref.child(nextId).setValue(mood)
+            Log.d("berhasil", "berhasil nambah mood")
         }
     }
 

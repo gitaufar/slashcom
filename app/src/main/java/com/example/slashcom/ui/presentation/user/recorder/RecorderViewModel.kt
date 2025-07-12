@@ -1,9 +1,11 @@
 package com.example.slashcom.ui.presentation.user.recorder
 
 import android.content.Context
+import android.os.Build
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
@@ -15,9 +17,15 @@ import com.example.slashcom.domain.usecase.MoodUseCase
 import com.example.slashcom.utils.AudioWavRecorder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.example.slashcom.data.api.UploadAudioRepositoryImpl
+import com.example.slashcom.data.repository.DashboardRepositoryImpl
+import com.example.slashcom.domain.model.Mood
 import com.example.slashcom.domain.usecase.UploadAudioUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.File
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,6 +33,7 @@ class RecorderViewModel @Inject constructor(
     private val moodUseCase: MoodUseCase,
 ) : ViewModel() {
 
+    private val repository: DashboardRepositoryImpl = DashboardRepositoryImpl()
     private lateinit var recorder: AudioWavRecorder
     private lateinit var outputFile: File
     private val uploadAudioUseCase = UploadAudioUseCase(UploadAudioRepositoryImpl())
@@ -32,8 +41,8 @@ class RecorderViewModel @Inject constructor(
     private val _isKrisis = mutableStateOf<Boolean?>(null)
     val isKrisis: State<Boolean?> = _isKrisis
 
-    private val _moodResponse = MutableLiveData<MoodResponse>()
-    val moodResponse: LiveData<MoodResponse> = _moodResponse
+    private val _moodResponse = MutableStateFlow<MoodResponse?>(null)
+    val moodResponse: StateFlow<MoodResponse?> = _moodResponse
 
     fun analyzeMood(outputFile: File, context: Context) {
         viewModelScope.launch {
@@ -100,26 +109,25 @@ class RecorderViewModel @Inject constructor(
         return if (::outputFile.isInitialized) outputFile else null
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun uploadAudio(onResult: (Boolean) -> Unit) {
         val file = getRecordedFile()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        val formattedDate = LocalDateTime.now().format(formatter)
         if (file != null && file.exists()) {
-            Log.d("masuk1","masuk kang")
             viewModelScope.launch {
-                Log.d("masuk2","masuk juga kang")
                 try {
-                    Log.d("masuk3","yes masuk kang")
                     val response = uploadAudioUseCase.invoke(file)
                     _isKrisis.value = response?.is_krisis
-                    Log.d("masuk6","${_isKrisis.value}")
+                    file.delete()
+                    repository.addMood(Mood(emosi = moodResponse.value!!.predicted_emotion, stress = moodResponse.value!!.predicted_stress_level.toInt(), crisis = false, date = formattedDate))
                     onResult(true)
                 } catch (e: Exception) {
-                    Log.d("masuk4","masuk error kang")
                     _isKrisis.value = null
                     onResult(false)
                 }
             }
         } else {
-            Log.d("masuk5","masuk gaada file kang")
             _isKrisis.value = null
             onResult(false)
         }
