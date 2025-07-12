@@ -117,8 +117,8 @@ class RecorderViewModel @Inject constructor(
         if (file != null && file.exists()) {
             viewModelScope.launch {
                 try {
-                    val response = uploadAudioUseCase.invoke(file)
-                    _isKrisis.value = response?.is_krisis
+//                    val response = uploadAudioUseCase.invoke(file)
+//                    _isKrisis.value = response?.is_krisis
                     file.delete()
                     repository.addMood(Mood(emosi = moodResponse.value!!.predicted_emotion, stress = moodResponse.value!!.predicted_stress_level.toInt(), crisis = false, date = formattedDate))
                     onResult(true)
