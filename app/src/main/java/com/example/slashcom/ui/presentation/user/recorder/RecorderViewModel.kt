@@ -38,8 +38,8 @@ class RecorderViewModel @Inject constructor(
     private lateinit var outputFile: File
     private val uploadAudioUseCase = UploadAudioUseCase(UploadAudioRepositoryImpl())
 
-    private val _isKrisis = mutableStateOf<Boolean?>(null)
-    val isKrisis: State<Boolean?> = _isKrisis
+    private val _isKrisis = MutableStateFlow<Boolean?>(false)
+    val isKrisis: StateFlow<Boolean?> = _isKrisis
 
     private val _moodResponse = MutableStateFlow<MoodResponse?>(null)
     val moodResponse: StateFlow<MoodResponse?> = _moodResponse
@@ -61,6 +61,10 @@ class RecorderViewModel @Inject constructor(
                 """.trimIndent(),
                     Toast.LENGTH_LONG
                 ).show()
+                if(result.predicted_stress_level >= 5.0) {
+                    val response = uploadAudioUseCase.invoke(outputFile)
+                    _isKrisis.value = response?.is_krisis
+                }
             }
         }
     }
@@ -117,10 +121,8 @@ class RecorderViewModel @Inject constructor(
         if (file != null && file.exists()) {
             viewModelScope.launch {
                 try {
-//                    val response = uploadAudioUseCase.invoke(file)
-//                    _isKrisis.value = response?.is_krisis
                     file.delete()
-                    repository.addMood(Mood(emosi = moodResponse.value!!.predicted_emotion, stress = moodResponse.value!!.predicted_stress_level.toInt(), crisis = false, date = formattedDate))
+                    repository.addMood(Mood(emosi = moodResponse.value!!.predicted_emotion, stress = moodResponse.value!!.predicted_stress_level.toInt(), crisis = isKrisis.value ?: false, date = formattedDate))
                     onResult(true)
                 } catch (e: Exception) {
                     _isKrisis.value = null

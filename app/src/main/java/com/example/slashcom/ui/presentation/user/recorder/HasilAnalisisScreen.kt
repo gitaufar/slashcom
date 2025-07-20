@@ -43,7 +43,7 @@ fun HasilAnalisisScreen(
     val saran by geminiViewModel.saran.collectAsState()
     val loading by geminiViewModel.loading.collectAsState()
     val mood by viewModel.moodResponse.collectAsState()
-    val isKrisis = viewModel.isKrisis.value
+    val isKrisis by viewModel.isKrisis.collectAsState()
     LaunchedEffect(Unit) {
         geminiViewModel.ambilSaran(isCrisis = isKrisis ?: false, emosi = mood!!.predicted_emotion, tingkatStress = mood!!.predicted_stress_level.toInt())
     }
