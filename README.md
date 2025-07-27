@@ -62,7 +62,7 @@ Both models are integrated into the mobile app via FastAPI, ensuring a smooth an
 
 
 
-## 👥 Group 5 Internship Raion 2025 
+## 👥 Group Compile Dar Der Dor 
 
 - [@Safira](https://www.linkedin.com/in/antikerahmasafira/) — Product Manager
 - [@Aufar](https://www.linkedin.com/in/zhafir-aufar/) — Frontend 
